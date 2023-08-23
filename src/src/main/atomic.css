@@ -1,0 +1,73 @@
+:root {
+    --bg: #FFF;
+	--prime-l: #DADADA;
+    --prime: #555;
+	--prime-d: #000;
+	--red: #EB5757;
+	--red-t: #EB575777;
+}
+
+@font-face {
+	font-family: "Prompt";
+	src: url(../../assets/fonts/Prompt-ExtraLight.ttf) format("truetype");
+	font-weight: 200;
+}
+@font-face {
+	font-family: "Prompt";
+	src: url(../../assets/fonts/Prompt-Regular.ttf) format("truetype");
+	font-weight: 400;
+}
+@font-face {
+	font-family: "Prompt";
+	src: url(../../assets/fonts/Prompt-ExtraBold.ttf) format("truetype");
+	font-weight: 600;
+}
+
+/* ATOMICS */
+.transparent { background: transparent; }
+.hidden { display: none; }
+.row { display: flex; align-items: center; }
+.row.centered { justify-content: center; }
+
+.c-prime-l { color: var(--prime-l) }
+.c-prime { color: var(--prime) }
+.c-prime-d { color: var(--prime-d) }
+.c-sec { color: var(--bg) }
+.c-red { color: var(--red); }
+
+.bg { background: var(--bg); }
+.bg-prime-l { background: var(--prime-l); }
+.bg-prime { background: var(--prime); }
+.bg-prime-d { background: var(--prime-d); }
+
+.borderless {
+	border: none;
+	outline: none;
+}
+
+.elev {
+	box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.14),
+		0px 1px 18px rgba(0, 0, 0, 0.12),
+		0px 3px 5px rgba(0, 0, 0, 0.2);
+}
+.elev:hover {
+	box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.34),
+		0px 1px 18px rgba(0, 0, 0, 0.32),
+		0px 3px 5px rgba(0, 0, 0, 0.4);
+}
+
+.fw-l { font-weight: 200; }
+.fw-r { font-weight: 400; }
+.fw-b { font-weight: 600; }
+.fs-s { font-size: 12px; }
+.fs-m { font-size: 14px; }
+
+.rz-180 {
+	transform: rotateZ(180deg);
+}
+
+.ry-90 {
+	transform: translateX(10px) scale(.9) rotateY(90deg);
+}
+
+.inert { pointer-events: none; }

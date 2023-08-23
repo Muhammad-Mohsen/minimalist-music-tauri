@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Minimalist Music</title>
+
+	<link rel="stylesheet" href="src/main/reset.css">
+	<link rel="stylesheet" href="src/main/icon-font.css">
+	<link rel="stylesheet" href="src/main/atomic.css">
+	<link rel="stylesheet" href="src/main/styles.css">
+
+	<link rel="stylesheet" href="src/toolbar/breadcrumb-bar.css">
+	<link rel="stylesheet" href="src/explorer/explorer.css">
+</head>
+<body onload="MainWindow.loaded()">
+<main data-tauri-drag-region>
+
+	<!-- WINDOW CONTROLS -->
+	<window-controls class="window-controls">
+		<button class="material-symbols-outlined" onclick="MainWindow.minimize()">remove</button>
+		<button class="material-symbols-outlined c-red close-window" onclick="MainWindow.close()">close</button>
+	</window-controls>
+
+	<!-- TRACK INFO -->
+	<track-info class="inert">
+		<label id="title" class="fw-l">Minimalist Music</label>
+		<label id="album-artist" class="c-prime"><strong>Album</strong> | Artist placeholders</label>
+	</track-info>
+
+	<!-- VISUALIZATION -->
+	<svg id="wave" class="inert">
+		<defs>
+			<linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+			  <stop offset="40%" style="stop-color:#aaa" />
+			  <stop offset="40%" style="stop-color:#eee" />
+			</linearGradient>
+		  </defs>
+
+		<clipPath id="clip"></clipPath>
+		<rect width="100%" height="100%" id="progress" clip-path="url(#clip)" fill="url(#progress-gradient)"></rect>
+	</svg>
+
+	<input type="range" id="seek">
+
+	<!-- CONTROLS -->
+	<controls class="row centered controls-container">
+		<div class="volume-container row center">
+			<button class="material-symbols-outlined">volume_up</button>
+			<!-- <div class="volume-slider transparent"></div> -->
+			<input type="range" id="volume-level" class="volume-slider">
+		</div>
+		<button class="material-symbols-outlined">repeat</button>
+
+		<button class="material-symbols-outlined sym-l">skip_previous</button>
+		<button class="material-symbols-outlined fab elev bg-prime-d c-sec">play_arrow</button>
+		<button class="material-symbols-outlined sym-l">skip_next</button>
+
+		<button class="material-symbols-outlined">shuffle</button>
+
+		<div class="row seek-container">
+			<div class="row fs-s fw-r c-sec bg-prime-d">
+				<label id="current-time" class="c-prime-d bg">5:24</label>
+				<label id="total-time">12:37</label>
+			</div>
+		</div>
+
+	</controls>
+
+	<!-- TOOLBAR -->
+	<toolbar>
+		<breadcrumb-bar>
+			<!-- <button class="material-symbols-outlined">search</button> -->
+			<button class="material-symbols-outlined" onclick="BreadcrumbBar.up()">arrow_upward</button>
+			<crumb-list></crumb-list>
+		</breadcrumb-bar>
+
+		<search-bar style="display: none;">
+			<button class="material-symbols-outlined">close</button>
+			<input type="text" onchange="console.log('changed')">
+		</search-bar>
+
+		<!--
+			<queue-bar>
+				<button id="cancel-playlist"></button>
+				<button id="add-playlist"></button>
+				<button id="play-playlist"></button>
+			</queue-bar>
+		-->
+
+	</toolbar>
+
+	<!-- EXPLORER -->
+	<explorer></explorer>
+
+	<!-- ROOT FOLDER CONFIGURATION -->
+	<button class="lib">
+		<i class="material-symbols-outlined">library_music</i>
+		SELECT MUSIC LIBRARY FOLDER
+		<p></p>
+	</button>
+
+	<button class="expand-collapse material-symbols-outlined" onclick="MainWindow.expandCollapse()">expand_more</button>
+
+	<!-- audio element -->
+	<audio id="audio" src=""></audio>
+
+	<script src="src/core/util.js"></script>
+	<script src="src/core/fs.js"></script>
+	<script src="src/core/prefs.js"></script>
+	<script src="src/core/state.js"></script>
+	<script src="src/main/main.js"></script>
+
+	<script src="src/toolbar/breadcrumb-bar.js"></script>
+	<script src="src/explorer/explorer.js"></script>
+	<script src="src/player/visualizer.js"></script>
+
+	<!-- <input type="file" onchange="loadFile(this);"> -->
+
+</main>
+</body>
+</html>

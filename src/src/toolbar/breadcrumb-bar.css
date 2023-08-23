@@ -1,0 +1,33 @@
+[state-expanded="false"] breadcrumb-bar { pointer-events: none; }
+
+breadcrumb-bar {
+	display: flex;
+	align-items: center;
+	margin: 40px 12px 12px;
+}
+
+crumb-list {
+	display: flex;
+}
+crumb-list button {
+	position: relative;
+	width: auto;
+	min-width: 32px;
+	margin: 1px;
+	padding: 4px 6px;
+	font-size: 14px;
+	flex-shrink: 0;
+}
+
+crumb-list button:last-child { font-weight: bold; }
+
+crumb-list button::after {
+	content: '/';
+	position: absolute;
+	inset: 6px -4px auto auto;
+	font-weight: 400;
+	transition: .3s;
+	z-index: 1;
+}
+
+crumb-list:hover button::after { opacity: 0; }
