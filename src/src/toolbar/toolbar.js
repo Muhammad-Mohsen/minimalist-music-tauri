@@ -1,4 +1,4 @@
-const Toolbar = (function () {
+const Toolbar = (() => {
 
 	const Mode = {
 		BREADCRUMB: 1,

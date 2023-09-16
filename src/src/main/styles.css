@@ -1,11 +1,12 @@
 /* WINDOW */
 body { overflow: hidden; }
+.layer-controls { z-index: 1; }
 main {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	border-radius: 12px;
-	border: 1px solid var(--prime-l);
+	border: 2px solid var(--prime-l);
 	background: var(--bg);
 	overflow: hidden;
 	font-family: Prompt;
@@ -29,7 +30,10 @@ window-controls button {
 button.close-window {
 	border-radius: 0 10px 0 6px;
 }
-window-controls button:hover { box-shadow: none !important; }
+window-controls button:hover {
+	background: var(--prime-l);
+	box-shadow: none !important;
+}
 button.close-window:hover {
 	background: var(--red) !important;
 	color: var(--bg) !important;
@@ -60,16 +64,20 @@ input[type=range]::-webkit-slider-thumb:hover { height: 16px; }
 /* BUTTONS */
 button {
 	min-width: 32px;
-	height: 32px;
+	min-height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	border-radius: 50px;
 	border: none;
 	outline: none;
 	background: var(--bg);
-	transition: all 0.2s, box-shadow .5s;
+	background: radial-gradient(circle at center, var(--prime-l) var(--grad-stop), var(--bg) var(--grad-stop));
+	transition: all .2s, box-shadow .5s .1s, --grad-stop .4s;
 }
 button:not(.fab):hover {
-	background: var(--prime-l);
-	box-shadow: 0 0 0 2px var(--prime);
+	--grad-stop: 100%;
+	box-shadow: 0 0 0 2px var(--prime-l);
 }
 
 .fab {
@@ -80,22 +88,21 @@ button:not(.fab):hover {
 	z-index: 1;
 }
 
-.expand-collapse {
-	position: absolute;
-	bottom: 8px;
-	left: calc(50% - 20px);
-	padding: 4.5px;
-	transition: all .2s, box-shadow .5s, rotate 0.4s ease-in-out;
-}
-
-[state-expanded="true"] .expand-collapse { rotate: 180deg; }
-
 track-info {
 	display: flex;
     flex-direction: column;
     align-items: center;
 	margin-top: 8px;
 }
+
+#title, #album-artist {
+	max-width: 360px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+#album-artist { max-width: 400px; }
+
 #title { font-size: 24px; font-weight: lighter; }
 #album-artist { font-size: 10px; }
 
@@ -113,6 +120,13 @@ button {
 .volume-slider {
 	width: 80px;
 	max-width: 80px;
+	opacity: 0;
+	pointer-events: none;
+	transition: .2s;
+}
+.volume-container:hover .volume-slider {
+	opacity: 1;
+	pointer-events: all;
 }
 
 #seek {margin: 14px 0;}
@@ -141,7 +155,6 @@ button {
 	transform: scaleY(0);
 	transform-origin: top;
 	transition: 0.2s;
-	z-index: -1;
 	pointer-events: none;
 }
 #wave.done {

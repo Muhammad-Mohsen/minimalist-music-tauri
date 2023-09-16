@@ -3,12 +3,19 @@
 breadcrumb-bar {
 	display: flex;
 	align-items: center;
-	margin: 40px 12px 12px;
+	margin: 0 12px 12px;
 }
 
 crumb-list {
 	display: flex;
+	padding: 1px 0;
+	overflow-x: auto;
 }
+crumb-list::-webkit-scrollbar {
+    width: 0;
+	height: 0;
+}
+
 crumb-list button {
 	position: relative;
 	width: auto;
@@ -19,6 +26,7 @@ crumb-list button {
 	flex-shrink: 0;
 }
 
+crumb-list button:first-child, crumb-list button:last-child { pointer-events: none; }
 crumb-list button:last-child { font-weight: bold; }
 
 crumb-list button::after {

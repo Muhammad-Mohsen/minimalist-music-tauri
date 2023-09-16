@@ -6,6 +6,9 @@
   "scripts": {
     "tauri": "tauri"
   },
+  "dependencies": {
+    "music-metadata-browser": "^2.5.10"
+  },
   "devDependencies": {
     "@tauri-apps/cli": "^1.4.0"
   }

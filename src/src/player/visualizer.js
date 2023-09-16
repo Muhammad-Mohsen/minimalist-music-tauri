@@ -1,7 +1,7 @@
 // thanks, https://css-tricks.com/making-an-audio-waveform-visualizer-with-vanilla-javascript/
 // and https://codepen.io/andrewscofield/pen/oGyrEv
 
-const Visualizer = (function () {
+const Visualizer = (() => {
 
 	const svg = document.querySelector('#wave');
 	const clipPath = svg.querySelector('clipPath');
@@ -57,8 +57,8 @@ const Visualizer = (function () {
 	}
 
 	return {
-		generate: generate,
-		setProgress: setProgress
+		generate,
+		setProgress
 	}
 
 })();

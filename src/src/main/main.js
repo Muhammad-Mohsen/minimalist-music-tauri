@@ -1,11 +1,11 @@
-var MainWindow = (function () {
+const MainWindow = (() => {
 
 	let windowSize;
 	let accordionAnimation = null;
 
 	const height = {
-		COLLAPSED: 188,
-		EXPANDED: 600,
+		COLLAPSED: 188, // value needs to be changed in tauri.conf as well
+		EXPANDED: 700,
 	}
 
 	function close() {
@@ -27,7 +27,7 @@ var MainWindow = (function () {
 			T.appWindow.setSize(windowSize);
 		});
 
-		State.setExpanded(to == height.EXPANDED);
+		State.set(State.key.EXPANDED, to == height.EXPANDED);
 	}
 
 	async function loaded() {
@@ -35,6 +35,7 @@ var MainWindow = (function () {
 
 		await State.restore();
 		BreadcrumbBar.update();
+		Explorer.update();
 	}
 
 	return {
@@ -46,3 +47,5 @@ var MainWindow = (function () {
 	}
 
 })();
+
+window.MainWindow = MainWindow;
