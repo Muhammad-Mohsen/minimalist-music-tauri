@@ -1,4 +1,4 @@
-const Playlist = (function () {
+const Playlist = (() => {
 
 	const repeat = {
 		NO: 0,

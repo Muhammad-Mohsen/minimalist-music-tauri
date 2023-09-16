@@ -1,77 +1,60 @@
-var State = (function () {
+const State = (() => {
+
+	const key = {
+		EXPANDED: 'state-expanded',
+		CURRENT_DIR: 'state-current-dir',
+		ROOT_DIR: 'state-root-dir',
+
+		PAUSED: 'state-paused',
+		SEEK: 'state-seek',
+		VOLUME: 'state-volume',
+		SHUFFLE: 'state-shuffle',
+		REPEAT: 'state-repeat',
+
+		TRACK: 'state-track',
+		DURATION: 'state-duration',
+		ALBUM: 'state-album',
+		ARTIST: 'state-artist'
+	}
 
 	const holder = document.querySelector('body');
 
-	const setExpanded = (expanded) => holder.setAttribute('state-expanded', expanded);
-	const expanded = () => holder.getAttribute('state-expanded') == 'true';
+	async function restore() {
+		const rootDir = Prefs.read(key.ROOT_DIR);
+		if (rootDir) set(key.ROOT_DIR, rootDir, true);
 
-	const setPaused = (paused) => holder.setAttribute('state-paused', paused);
-	const paused = () => holder.getAttribute('state-paused') == 'true';
+		const currentDir = Prefs.read(key.CURRENT_DIR) || rootDir || await FS.audioDir();
+		set(key.CURRENT_DIR, currentDir, true);
 
-	const setCurrentDir = (currentDir) => holder.setAttribute('state-current-dir', currentDir);
-	const currentDir = () =>holder.getAttribute('state-current-dir');
+		set(key.EXPANDED, false, true);
+		set(key.PAUSED, true, true);
 
-	const setRootDir = (rootDir) => holder.setAttribute('state-root-dir', rootDir);
-	const rootDir = () => holder.getAttribute('state-root-dir');
+		set(key.SEEK, Prefs.read(key.SEEK), true);
+		set(key.VOLUME, Prefs.read(key.VOLUME), true);
+		set(key.SHUFFLE, Prefs.read(key.SHUFFLE), true);
+		set(key.REPEAT, Prefs.read(key.REPEAT), true);
 
-	const restore = async () => {
-		const rootDir = Prefs.read(Prefs.key.ROOT_DIR);
-		setRootDir(rootDir);
+		set(key.TRACK, Prefs.read(key.TRACK), true);
+		set(key.DURATION, Prefs.read(key.DURATION), true);
+		set(key.ALBUM, Prefs.read(key.ALBUM), true);
+		set(key.ARTIST, Prefs.read(key.ARTIST), true);
+	}
 
-		const currentDir = Prefs.read(Prefs.key.CURRENT_DIR) || await T.path.audioDir();
-		setCurrentDir(currentDir);
+	function set(key, val, noSave) {
+		holder.setAttribute(key, val);
+		if (!noSave) Prefs.write(key, val);
+	}
 
-		setExpanded(false);
-		setPaused(true);
-	};
+	function get(key) {
+		return holder.getAttribute(key);
+	}
 
 	return {
+		key,
+
 		restore,
-
-		setExpanded,
-		expanded,
-
-		setPaused,
-		paused,
-
-		setCurrentDir,
-		currentDir,
-
-		setRootDir,
-		rootDir,
+		set,
+		get,
 	}
 
 })();
-
-var T = (function () {
-
-	return {
-		appWindow: window.__TAURI__.window.appWindow,
-		path: window.__TAURI__.path,
-		fs: window.__TAURI__.fs,
-	}
-
-})();
-
-
-const XState = {
-
-	currentDirectory: '', // TODO set in DOM
-	paused: '', // TOOD set in DOM
-
-	track: {
-		exists: false,
-		path: '',
-
-		title: '',
-		album: '',
-		artist: '',
-		duration: 0,
-		seek: 0,
-		// chapters: [],
-
-	},
-
-	playlist: null,
-
-};

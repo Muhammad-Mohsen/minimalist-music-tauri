@@ -18,13 +18,13 @@
 <main data-tauri-drag-region>
 
 	<!-- WINDOW CONTROLS -->
-	<window-controls class="window-controls">
+	<window-controls class="window-controls layer-controls">
 		<button class="material-symbols-outlined" onclick="MainWindow.minimize()">remove</button>
 		<button class="material-symbols-outlined c-red close-window" onclick="MainWindow.close()">close</button>
 	</window-controls>
 
 	<!-- TRACK INFO -->
-	<track-info class="inert">
+	<track-info class="inert layer-controls">
 		<label id="title" class="fw-l">Minimalist Music</label>
 		<label id="album-artist" class="c-prime"><strong>Album</strong> | Artist placeholders</label>
 	</track-info>
@@ -42,31 +42,33 @@
 		<rect width="100%" height="100%" id="progress" clip-path="url(#clip)" fill="url(#progress-gradient)"></rect>
 	</svg>
 
-	<input type="range" id="seek">
+	<input type="range" id="seek" class="layer-controls">
 
 	<!-- CONTROLS -->
 	<controls class="row centered controls-container">
 		<div class="volume-container row center">
-			<button class="material-symbols-outlined">volume_up</button>
+			<button id="volume-icon" class="material-symbols-outlined">volume_up</button>
 			<!-- <div class="volume-slider transparent"></div> -->
 			<input type="range" id="volume-level" class="volume-slider">
 		</div>
 		<button class="material-symbols-outlined">repeat</button>
 
-		<button class="material-symbols-outlined sym-l">skip_previous</button>
-		<button class="material-symbols-outlined fab elev bg-prime-d c-sec">play_arrow</button>
-		<button class="material-symbols-outlined sym-l">skip_next</button>
+		<button class="material-symbols-outlined sym-l" onclick="Player.rw();">skip_previous</button>
+		<button id="play-pause" class="material-symbols-outlined fab elev bg-prime-d c-sec" onclick="Player.playPause();">play_arrow</button>
+		<button class="material-symbols-outlined sym-l" onclick="Player.ff();">skip_next</button>
 
 		<button class="material-symbols-outlined">shuffle</button>
 
 		<div class="row seek-container">
 			<div class="row fs-s fw-r c-sec bg-prime-d">
-				<label id="current-time" class="c-prime-d bg">5:24</label>
-				<label id="total-time">12:37</label>
+				<label id="current-position" class="c-prime-d bg">--:--</label>
+				<label id="duration">--:--</label>
 			</div>
 		</div>
 
 	</controls>
+
+	<button class="expand material-symbols-outlined" onclick="MainWindow.expandCollapse()">expand_more</button>
 
 	<!-- TOOLBAR -->
 	<toolbar>
@@ -91,21 +93,30 @@
 
 	</toolbar>
 
-	<!-- EXPLORER -->
-	<explorer></explorer>
+	<!-- EXPLORER - two to do transition animations...actually three are needed -->
+	<explorer-container>
+		<explorer class="current" data-dir=""></explorer>
+		<explorer class="out" data-dir=""></explorer>
+		<explorer class="in" data-dir=""></explorer>
+	</explorer-container>
 
 	<!-- ROOT FOLDER CONFIGURATION -->
-	<button class="lib">
+	<button class="lib" onclick="Explorer.setRootDir()">
 		<i class="material-symbols-outlined">library_music</i>
-		SELECT MUSIC LIBRARY FOLDER
-		<p></p>
+		<!-- CHOOSE LIBRARY FOLDER -->
+		<p>Please choose the root folder<br>of your music library.</p>
 	</button>
 
-	<button class="expand-collapse material-symbols-outlined" onclick="MainWindow.expandCollapse()">expand_more</button>
+	<bottom-bar class="elev">
+		<button class="collapse material-symbols-outlined" onclick="Explorer.setRootDir()">library_music</button>
+		<button class="collapse material-symbols-outlined" onclick="">search</button>
+		<button class="collapse material-symbols-outlined" onclick="MainWindow.expandCollapse()">expand_less</button>
+	</bottom-bar>
 
 	<!-- audio element -->
 	<audio id="audio" src=""></audio>
 
+	<script src="src/core/tauri.js"></script>
 	<script src="src/core/util.js"></script>
 	<script src="src/core/fs.js"></script>
 	<script src="src/core/prefs.js"></script>
@@ -115,6 +126,9 @@
 	<script src="src/toolbar/breadcrumb-bar.js"></script>
 	<script src="src/explorer/explorer.js"></script>
 	<script src="src/player/visualizer.js"></script>
+	<script type="module" src="src/core/metadata.js"></script>
+	<script src="src/player/player.js"></script>
+	<script src="src/player/player-ui.js"></script>
 
 	<!-- <input type="file" onchange="loadFile(this);"> -->
 

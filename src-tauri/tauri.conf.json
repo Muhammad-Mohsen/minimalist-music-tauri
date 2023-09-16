@@ -8,7 +8,7 @@
 	},
 	"package": {
 		"productName": "minimalist-music",
-		"version": "0.0.0"
+		"version": "0.1.0"
 	},
 	"tauri": {
 		"allowlist": {
@@ -22,17 +22,22 @@
 				"setSize": true
 			},
 			"fs": {
-				"readDir": true,
-				"readFile": true,
-				"exists": true,
-				"scope": ["**", "**/*", "/**/*", "*"]
+				"all": true,
+				"scope": ["**"]
+			},
+			"dialog": {
+				"open": true
 			},
 			"globalShortcut": {
-        "all": true
-      },
+				"all": true
+			},
 			"path": {
-        "all": true
-      }
+				"all": true
+			},
+			"protocol": {
+				"asset": true,
+				"assetScope": ["**"]
+			  }
 		},
 		"bundle": {
 			"active": true,
