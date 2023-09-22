@@ -1,8 +1,25 @@
-const Player = (() => {
+import { EventBus } from "../core/event-bus";
+import { Native } from "../core/native";
+import { State } from "../core/state";
+import { when } from "../core/util";
+import { UI } from "./player-ui";
 
+export const Player = (() => {
+
+	const SELF = EventBus.target.PLAYER;
 	const SEEK_JUMP = 60; // 1 minute
 
 	const audio = new Audio();
+
+	EventBus.subscribe((event) => {
+		if (event.target == SELF) return;
+
+		when(event.type)
+			.is(EventBus.type.PLAY_ITEM, () => {
+				const fileSrc = State.get(State.key.TRACK);
+				onPlayItem(fileSrc, true);
+			});
+	});
 
 	audio.onended = function (event) {
 		// TODO play next
@@ -10,7 +27,7 @@ const Player = (() => {
 
 	function onSeek(target) {
 		audio.currentTime = target.value;
-		Player.UI.seek(audio.currentTime);
+		UI.seek(audio.currentTime);
 	}
 
 	// volume change listener
@@ -18,46 +35,32 @@ const Player = (() => {
 		audio.volume = target.value;
 	}
 
-	async function load(fileSrc, auto) {
-		const src = T.convertFileSrc(fileSrc);
+	async function onPlayItem(fileSrc, auto) {
+		const src = Native.FS.pathToSrc(fileSrc);
 
 		audio.pause();
 		seek(0);
 		audio.src = src;
 		audio.autoplay = auto;
-
-		Player.UI.title(fileSrc.split(Explorer.PATH_SEPARATOR).pop()); // TODO use metadata
-
-		const buffer = await getBuffer(src);
-		Visualizer.generate(buffer);
-
-		updateSeek();
-
-		const metadata = await Metadata.parse(buffer);
-		console.log(metadata);
 	}
 
 	function playPause() {
 		audio.paused ? audio.play() : audio.pause();
-		Player.UI.playPause(audio.paused);
-
-		updateSeek();
 	}
 
 	function seek(seekTime) {
 		audio.currentTime = seekTime;
-		Player.UI.seek(0, 500); // TODO
 	}
 
-	function updateSeek() {
-		setTimeout(() => {
-			if (audio.paused) return;
+	// function updateSeek() {
+	// 	setTimeout(() => {
+	// 		if (audio.paused) return;
 
-			Player.UI.seek(audio.currentTime);
-			updateSeek();
+	// 		UI.seek(audio.currentTime);
+	// 		updateSeek();
 
-		}, 1000);
-	}
+	// 	}, 1000);
+	// }
 
 	function ff() {
 		seek(audio.currentTime + SEEK_JUMP)
@@ -66,13 +69,8 @@ const Player = (() => {
 		seek(audio.currentTime - SEEK_JUMP);
 	}
 
-	async function getBuffer(url) {
-		return await fetch(url)
-  			.then((response) => response.arrayBuffer());
-	}
-
 	return {
-		load,
+		onPlayItem,
 		playPause,
 
 		seek,
@@ -80,7 +78,7 @@ const Player = (() => {
 		rw,
 
 		onSeek,
-		onVolumeChange,
+		onVolumeChange
 	}
 
 })();

@@ -1,4 +1,17 @@
-const MainWindow = (() => {
+// import { Buffer } from "buffer";
+// import { process } from "process";
+
+import { EventBus } from "../core/event-bus";
+import { Native } from "../core/native";
+import { State } from "../core/state";
+import { easeIO } from "../core/util";
+import { Explorer } from "../explorer/explorer";
+import { Player } from "../player/player";
+import { BreadcrumbBar } from "../toolbar/breadcrumb-bar";
+
+export const MainWindow = (() => {
+
+	const SELF = EventBus.target.MAIN;
 
 	let windowSize;
 	let accordionAnimation = null;
@@ -9,11 +22,11 @@ const MainWindow = (() => {
 	}
 
 	function close() {
-		T.appWindow.close();
+		Native.Window.close();
 	}
 
 	function minimize() {
-		T.appWindow.minimize();
+		Native.Window.minimize();
 	}
 
 	function expandCollapse() {
@@ -24,18 +37,17 @@ const MainWindow = (() => {
 		clearInterval(accordionAnimation); // clear the previous animation (if any)
 		accordionAnimation = easeIO(from, to, 300, (val) => {
 			windowSize.height = Math.floor(val);
-			T.appWindow.setSize(windowSize);
+			Native.Window.resize(windowSize);
 		});
 
 		State.set(State.key.EXPANDED, to == height.EXPANDED);
 	}
 
 	async function loaded() {
-		windowSize = await T.appWindow.outerSize();
+		windowSize = await Native.Window.size();
 
 		await State.restore();
-		BreadcrumbBar.update();
-		Explorer.update();
+		EventBus.dispatch({ target: SELF, type: EventBus.type.DIR_CHANGE })
 	}
 
 	return {
@@ -49,3 +61,6 @@ const MainWindow = (() => {
 })();
 
 window.MainWindow = MainWindow;
+window.Explorer = Explorer;
+window.BreadcrumbBar = BreadcrumbBar;
+window.Player = Player;

@@ -1,37 +1,29 @@
-// TODO
-const Explorer = (function() {
+import { EventBus } from "../core/event-bus";
+import { Native } from "../core/native";
+import { State } from "../core/state";
+import { when } from "../core/util";
 
-	const PATH_SEPARATOR = '\\';
+export const Explorer = (function() {
+
+	const SELF = EventBus.target.EXPLORER;
 
 	const cache = new Map();
 
-	async function listFiles() {
-		const current = State.get(State.key.CURRENT_DIR);
-		let files = cache.get(current);
+	// EVENT BUS
+	EventBus.subscribe((event) => {
+		if (event.target == SELF) return;
 
-		if (!files) {
-			files = await FS.listFiles(current);
-			cache.set(current, files);
-		}
-
-		return files;
-	}
-
-	async function setRootDir() {
-		const root = await FS.openRootDirDialog();
-		if (!root) return;
-
-		State.set(State.key.ROOT_DIR, root);
-		goto(root);
-	}
+		when(event.type)
+			.is(EventBus.type.DIR_CHANGE, () => update());
+	});
 
 	function goto(dir) {
 		State.set(State.key.CURRENT_DIR, dir);
-
-		BreadcrumbBar.update();
+		EventBus.dispatch({ target: SELF, type: EventBus.type.DIR_CHANGE });
 		update();
 	}
 
+	// UI
 	async function update() {
 		const files = await listFiles();
 
@@ -57,22 +49,8 @@ const Explorer = (function() {
 	}
 
 	function createItem(file) {
-		const icon = FS.isDir(file) ? 'folder' : 'music_note'
+		const icon = Native.FS.isDir(file) ? 'folder' : 'music_note'
 		return `<button path="${file.path}" ondblclick="Explorer.onItemClick(this);"><i class="material-symbols-outlined">${icon}</i>${file.name}</button>`;
-	}
-
-	function onItemClick(target) {
-		const path = target.getAttribute('path');
-
-		if (isDir(target)) {
-			State.set(State.key.CURRENT_DIR, path);
-			BreadcrumbBar.update();
-			update();
-
-		} else {
-			select(target);
-			Player.load(target.getAttribute('path'), true);
-		}
 	}
 
 	function select(target) {
@@ -80,6 +58,39 @@ const Explorer = (function() {
 		target.classList.add('selected');
 	}
 
+	// CLICK HANDLERS
+	async function setRootDir() {
+		const root = await Native.FS.openRootDirDialog();
+		if (!root) return;
+
+		State.set(State.key.ROOT_DIR, root);
+		goto(root);
+	}
+	function onItemClick(target) {
+		const path = target.getAttribute('path');
+
+		if (isDir(target)) {
+			goto(path);
+
+		} else {
+			select(target);
+			State.set(State.key.TRACK, target.getAttribute('path'));
+			EventBus.dispatch({ target: EventBus.target.EXPLORER, type: EventBus.type.PLAY_ITEM });
+		}
+	}
+
+	// UTILs
+	async function listFiles() {
+		const current = State.get(State.key.CURRENT_DIR);
+		let files = cache.get(current);
+
+		if (!files) {
+			files = await Native.FS.listFiles(current);
+			cache.set(current, files);
+		}
+
+		return files;
+	}
 	function isAtRoot() {
 		return State.get(State.key.CURRENT_DIR).length <= State.get(State.key.ROOT_DIR).length;
 	}
@@ -88,13 +99,10 @@ const Explorer = (function() {
 	}
 
 	return {
-		PATH_SEPARATOR,
-
 		goto,
-		setRootDir,
 		isAtRoot,
 
-		update,
+		setRootDir,
 		onItemClick
 	}
 
