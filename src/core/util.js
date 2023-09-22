@@ -7,6 +7,7 @@ document.createElementFromHTML = (htmlString) => {
 	return container.childNodes[0];
 }
 
+// JSON
 JSON.tryParse = function (jsonStr, defaultValue) {
 	try {
 		return JSON.parse(jsonStr);
@@ -23,8 +24,12 @@ JSON.isValid = function (jsonStr) {
 	catch { return false; }
 }
 
+Math.rand = function (min, max) {
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+
 // thanks https://codepen.io/rantrix/pen/dpZLXX
-function easeIO(from, to, duration, callback) {
+export function easeIO(from, to, duration, callback) {
 
 	const start = new Date().getTime();
 
@@ -44,4 +49,28 @@ function easeIO(from, to, duration, callback) {
 	}
 
 	return animation;
+}
+
+// "when" statement
+class When {
+
+	done = false;
+
+    constructor(param) {
+        this.param = param;
+    }
+
+	is(val, callback) {
+		if (this.done) return this;
+
+		if (this.param == val) {
+			callback();
+			this.done = true;
+		}
+		return this;
+	}
+}
+
+export function when(param) {
+	return new When(param);
 }

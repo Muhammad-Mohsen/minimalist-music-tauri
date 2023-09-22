@@ -1,4 +1,8 @@
-const State = (() => {
+import { Native } from "./native";
+import { Prefs } from "./prefs";
+import { quotes } from "./quotes";
+
+export const State = (() => {
 
 	const key = {
 		EXPANDED: 'state-expanded',
@@ -23,7 +27,7 @@ const State = (() => {
 		const rootDir = Prefs.read(key.ROOT_DIR);
 		if (rootDir) set(key.ROOT_DIR, rootDir, true);
 
-		const currentDir = Prefs.read(key.CURRENT_DIR) || rootDir || await FS.audioDir();
+		const currentDir = Prefs.read(key.CURRENT_DIR) || rootDir || await Native.FS.audioDir();
 		set(key.CURRENT_DIR, currentDir, true);
 
 		set(key.EXPANDED, false, true);
@@ -36,7 +40,7 @@ const State = (() => {
 
 		set(key.TRACK, Prefs.read(key.TRACK), true);
 		set(key.DURATION, Prefs.read(key.DURATION), true);
-		set(key.ALBUM, Prefs.read(key.ALBUM), true);
+		set(key.ALBUM, Prefs.read(key.ALBUM) || quotes[Math.rand(0, 99)], true);
 		set(key.ARTIST, Prefs.read(key.ARTIST), true);
 	}
 

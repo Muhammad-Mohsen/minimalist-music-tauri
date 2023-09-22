@@ -1,16 +1,32 @@
-const BreadcrumbBar = (() => {
+import { EventBus } from "../core/event-bus";
+import { Native } from "../core/native";
+import { State } from "../core/state";
+import { when } from "../core/util";
+import { Explorer } from "../explorer/explorer";
+
+export const BreadcrumbBar = (() => {
+
+	const SELF = EventBus.target.BREADCRUMB_BAR;
 
 	const container = document.querySelector('breadcrumb-bar');
 	const crumbs = container.querySelector('crumb-list');
+
+	// EVENT BUS
+	EventBus.subscribe((event) => {
+		if (event.target == SELF) return;
+
+		when(event.type)
+			.is(EventBus.type.DIR_CHANGE, () => update());
+	});
 
 	function update() {
 		const current = State.get(State.key.CURRENT_DIR);
 
 		crumbs.innerHTML = '';
-		current.split(Explorer.PATH_SEPARATOR).reduce((acc, curr) => {
+		current.split(Native.FS.PATH_SEPARATOR).reduce((acc, curr) => {
 			if (!curr) return acc;
 
-			const pathSegment = acc ? acc + Explorer.PATH_SEPARATOR + curr : curr;
+			const pathSegment = acc ? acc + Native.FS.PATH_SEPARATOR + curr : curr;
 
 			crumbs.insertAdjacentHTML('beforeend', crumb(pathSegment));
 
@@ -26,17 +42,17 @@ const BreadcrumbBar = (() => {
 
 		const current = State.get(State.key.CURRENT_DIR);
 
-		const segments = current.split(Explorer.PATH_SEPARATOR);
+		const segments = current.split(Native.FS.PATH_SEPARATOR);
 		segments.pop();
-		const dir = segments.join(Explorer.PATH_SEPARATOR);
-		State.set(State.key.CURRENT_DIR, dir);
+		const dir = segments.join(Native.FS.PATH_SEPARATOR);
 
+		State.set(State.key.CURRENT_DIR, dir);
+		EventBus.dispatch({ target: SELF, type: EventBus.type.DIR_CHANGE });
 		update();
-		Explorer.update();
 	}
 
 	function crumb(path) {
-		const label = path.split(Explorer.PATH_SEPARATOR).pop();
+		const label = path.split(Native.FS.PATH_SEPARATOR).pop();
 		return `<button path="${path}" onclick="BreadcrumbBar.onCrumbClick(this)">${label}</button>`;
 	}
 
@@ -44,8 +60,8 @@ const BreadcrumbBar = (() => {
 		const dir = target.getAttribute('path');
 
 		State.set(State.key.CURRENT_DIR, dir);
+		EventBus.dispatch({ target: SELF, type: EventBus.type.DIR_CHANGE });
 		update();
-		Explorer.update();
 	}
 
 	return {

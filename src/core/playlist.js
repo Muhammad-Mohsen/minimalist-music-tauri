@@ -1,4 +1,4 @@
-const Playlist = (() => {
+export const Playlist = (() => {
 
 	const repeat = {
 		NO: 0,
@@ -51,16 +51,16 @@ const Playlist = (() => {
 	}
 
 	return {
-		repeat: repeat,
+		repeat,
 
-		toggleShuffle: toggleShuffle,
-		toggleRepeat: toggleRepeat,
+		toggleShuffle,
+		toggleRepeat,
 
-		set: set,
-		contains: contains,
+		set,
+		contains,
 
-		getNext: getNext,
-		getPrev: getPrev,
+		getNext,
+		getPrev,
 	}
 
 })();

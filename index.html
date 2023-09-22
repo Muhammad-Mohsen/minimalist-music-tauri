@@ -26,7 +26,7 @@
 	<!-- TRACK INFO -->
 	<track-info class="inert layer-controls">
 		<label id="title" class="fw-l">Minimalist Music</label>
-		<label id="album-artist" class="c-prime"><strong>Album</strong> | Artist placeholders</label>
+		<label id="album-artist" class="c-prime ff-m">Hello...</label>
 	</track-info>
 
 	<!-- VISUALIZATION -->
@@ -60,7 +60,7 @@
 		<button class="material-symbols-outlined">shuffle</button>
 
 		<div class="row seek-container">
-			<div class="row fs-s fw-r c-sec bg-prime-d">
+			<div class="row fs-s fw-r c-sec bg-prime-d ff-m">
 				<label id="current-position" class="c-prime-d bg">--:--</label>
 				<label id="duration">--:--</label>
 			</div>
@@ -116,19 +116,18 @@
 	<!-- audio element -->
 	<audio id="audio" src=""></audio>
 
-	<script src="src/core/tauri.js"></script>
-	<script src="src/core/util.js"></script>
-	<script src="src/core/fs.js"></script>
-	<script src="src/core/prefs.js"></script>
-	<script src="src/core/state.js"></script>
-	<script src="src/main/main.js"></script>
+	<script type="module" src="src/core/native.js"></script>
+	<script type="module" src="src/core/util.js"></script>
+	<script type="module" src="src/core/prefs.js"></script>
+	<script type="module" src="src/core/state.js"></script>
+	<script type="module" src="src/main/main.js"></script>
 
-	<script src="src/toolbar/breadcrumb-bar.js"></script>
-	<script src="src/explorer/explorer.js"></script>
-	<script src="src/player/visualizer.js"></script>
+	<script type="module" src="src/toolbar/breadcrumb-bar.js"></script>
+	<script type="module" src="src/explorer/explorer.js"></script>
+	<script type="module" src="src/player/visualizer.js"></script>
 	<script type="module" src="src/core/metadata.js"></script>
-	<script src="src/player/player.js"></script>
-	<script src="src/player/player-ui.js"></script>
+	<script type="module" src="src/player/player.js"></script>
+	<script type="module" src="src/player/player-ui.js"></script>
 
 	<!-- <input type="file" onchange="loadFile(this);"> -->
 

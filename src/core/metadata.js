@@ -5,22 +5,23 @@
 // actually
 // https://github.com/Borewit/music-metadata-browser (supports chapters!)
 
-// import * as musicMetadata from "../../../node_modules/music-metadata-browser/lib/index.js";
 import * as musicMetadata from 'music-metadata-browser';
 
 
-const Metadata = (() => {
+export const Metadata = (() => {
 
-	async function parse(buffer) {
-
+	async function fromBuffer(buffer) {
 		const metadata = await musicMetadata.parseBuffer(buffer);
 		return metadata;
 	}
 
+	async function fromSrc(url) {
+		return await musicMetadata.fetchFromUrl(url);
+	}
+
 	return {
-		parse: parse,
+		fromBuffer,
+		fromSrc
 	}
 
 })();
-
-window.Metadata = Metadata;
