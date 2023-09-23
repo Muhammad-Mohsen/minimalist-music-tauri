@@ -5,6 +5,7 @@ import { State } from "../core/state.js";
 import { when } from "../core/util.js";
 import { Visualizer } from "./visualizer.js";
 
+// no longer used...code moved to the main player object instead
 export const UI = (() => {
 
 	const SELF = EventBus.target.UI;
@@ -24,23 +25,23 @@ export const UI = (() => {
 
 	const uiPlayPause = document.querySelector('#play-pause');
 
-	EventBus.subscribe((event) => {
-		if (event.target == SELF) return;
+	// EventBus.subscribe((event) => {
+	// 	if (event.target == SELF) return;
 
-		when(event.type)
-			.is(EventBus.type.PLAY_ITEM, async () => {
-				const path = State.get(State.key.TRACK);
-				const src = Native.FS.pathToSrc(path);
+	// 	when(event.type)
+	// 		.is(EventBus.type.PLAY_ITEM, async () => {
+	// 			const path = State.get(State.key.TRACK);
+	// 			const src = Native.FS.pathToSrc(path);
 
-				const metadata = await Metadata.fromSrc(src);
-				title(metadata.common.title);
-				albumArtist(metadata.common.album, metadata.common.artist);
-				seek(0, metadata.format.duration);
+	// 			const metadata = await Metadata.fromSrc(src);
+	// 			title(metadata.common.title);
+	// 			albumArtist(metadata.common.album, metadata.common.artist);
+	// 			seek(0, metadata.format.duration);
 
-				const visualizerBuffer = await getBuffer(src);
-				Visualizer.generate(visualizerBuffer);
-			});
-	});
+	// 			const visualizerBuffer = await getBuffer(src);
+	// 			Visualizer.generate(visualizerBuffer);
+	// 		});
+	// });
 
 	function title(title) {
 		uiTitle.innerHTML = title || readablePath(State.get(State.key.TRACK));
@@ -53,22 +54,36 @@ export const UI = (() => {
 		uiAlbumArtist.setAttribute('title', `${album} | ${artist}`);
 	}
 
-	function seek(seek, duration) {
+	function seek(position, duration) {
 		if (duration) {
 			uiSeek.max = duration;
 			uiDuration.innerHTML = readableTime(duration);
 		}
-
-		uiSeek.value = seek;
-		updateRange(uiSeek);
-
 		uiPosition.innerHTML = readableTime(seek);
 
-		Visualizer.setProgress(seek / uiSeek.max);
+		uiSeek.value = position;
+		updateRange(uiSeek);
+		Visualizer.setProgress(position / uiSeek.max);
+	}
+	function onSeekMouseDown(target) {
+		target.setAttribute('seeking', true);
+	}
+	function onSeekMouseUp(target) {
+		target.setAttribute('seeking', false);
+	}
+
+	function tickTock(audio) {
+		setTimeout(() => {
+			if (audio.paused) return;
+
+			seek(audio.currentTime);
+			tickTock(audio);
+
+		}, 1000);
 	}
 
 	// TODO
-	function volume(volume) {
+	function onVolumeChange(volume) {
 		updateRange(uiVolume);
 
 		if (volume == 0) uiVolumeIcon.innerHTML = 'volume_mute';
@@ -116,7 +131,11 @@ export const UI = (() => {
 		albumArtist,
 
 		seek,
-		volume,
+		onVolumeChange,
+		onSeekMouseDown,
+		onSeekMouseUp,
+
+		tickTock,
 
 		playPause,
 		shuffle,
