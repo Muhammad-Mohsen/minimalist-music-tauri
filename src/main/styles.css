@@ -161,24 +161,38 @@ button {
 	transform: scaleY(-1);
 }
 
-/*
-HMMMM...
+#play-pause {
+	position: relative;
 
-audio::-webkit-media-controls-panel
-audio::-webkit-media-controls-mute-button
-audio::-webkit-media-controls-play-button
-audio::-webkit-media-controls-timeline-container
-audio::-webkit-media-controls-current-time-display
-audio::-webkit-media-controls-time-remaining-display
-audio::-webkit-media-controls-timeline
-audio::-webkit-media-controls-volume-slider-container
-audio::-webkit-media-controls-volume-slider
-audio::-webkit-media-controls-seek-back-button
-audio::-webkit-media-controls-seek-forward-button
-audio::-webkit-media-controls-fullscreen-button
-audio::-webkit-media-controls-rewind-button
-audio::-webkit-media-controls-return-to-realtime-button
-audio::-webkit-media-controls-toggle-closed-captions-button
-
-
-*/
+	&::before {
+		content: 'play_arrow';
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50px;
+		font-size: 40px;
+		transition: rotate .2s ease-out;
+	}
+	&.pause::before {
+		content: 'equal';
+		rotate: 90deg;
+		scale: .8;
+	}
+	&.loading { pointer-events: none; }
+	&.loading::before {
+		content: '';
+		inset: 2px;
+		overflow: hidden;
+		background: #fff url(/assets/imgs/sine.svg) 0 0 repeat-x;
+		background-size: 40px 44px;
+		animation: move 4s linear infinite;
+		filter: invert(1);
+		pointer-events: a;
+	}
+}
+@keyframes move {
+	0% { background-position: 0 0; }
+	100% { background-position: -100px 0; }
+}
