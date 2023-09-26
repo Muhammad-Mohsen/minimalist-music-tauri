@@ -1,9 +1,9 @@
-import { EventBus } from "../core/event-bus";
-import { Native } from "../core/native";
-import { State } from "../core/state";
-import { when } from "../core/util";
-import { Metadata } from "../core/metadata.js";
-import { Visualizer } from "./visualizer.js";
+import { EventBus } from '../core/event-bus';
+import { Native } from '../core/native';
+import { State } from '../core/state';
+import { when } from '../core/util';
+import { Metadata } from '../core/metadata/metadata';
+import { Visualizer } from './visualizer.js';
 
 export const Player = (() => {
 
@@ -11,7 +11,6 @@ export const Player = (() => {
 	const SEEK_JUMP = 60; // 1 minute
 	const SEEKING_ATTR = 'seeking';
 
-	debugger;
 	const audio = new Audio();
 
 	let ticker;
@@ -40,36 +39,51 @@ export const Player = (() => {
 				load(src, true);
 
 				// UI
-				const metadata = await Metadata.fromSrc(src);
-				title(metadata.common.title);
-				albumArtist(metadata.common.album, metadata.common.artist);
-				seek(0, metadata.format.duration);
+				// const metadataWorker = new Worker('src/core/metadata/metadata.js');
+				// metadataWorker.postMessage(src);
+				// metadataWorker.onmessage = (event) => {
+				// 	const metadata = JSON.parse(event.data);
 
-				const visualizerBuffer = await getBuffer(src);
-				Visualizer.generate(visualizerBuffer);
+				// 	title(metadata.common.title);
+				// 	albumArtist(metadata.common.album, metadata.common.artist);
+				// 	seek(0, metadata.format.duration);
+
+				// 	metadataWorker.terminate();
+				// }
+
+				setTimeout(() => {
+					Metadata.fromSrc(src).then(metadata => {
+						title(metadata.common.title);
+						albumArtist(metadata.common.album, metadata.common.artist);
+						seek(0, metadata.format.duration);
+					});
+				}, 3000);
+
+				// getBuffer(src).then(visualizerBuffer => Visualizer.generate(visualizerBuffer));
 			});
 	});
 
 	audio.onended = function (event) {
 		// TODO play next
 	}
-
-	function onSeek(target) {
-		audio.currentTime = target.value;
-		// UI.seek(audio.currentTime);
+	audio.oncanplay = function (event) {
+		ui.playPause.classList.remove('loading');
+		playPause(audio.autoplay);
 	}
 
 	async function load(src, auto) {
+		ui.playPause.classList.add('loading');
+
 		audio.pause();
 		seek(0);
 		audio.src = src;
 		audio.autoplay = auto;
-
-		playPause(!auto);
 	}
 
-	function playPause() {
-		audio.paused ? audio.play() : audio.pause();
+	function playPause(force) {
+		force != undefined
+			? (force ? audio.play() : audio.pause())
+			: (audio.paused ? audio.play() : audio.pause());
 
 		ui.playPause.classList.toggle('pause', !audio.paused);
 		seekTickTock();
@@ -78,7 +92,6 @@ export const Player = (() => {
 	// not used
 	function ff() { seek(audio.currentTime + SEEK_JUMP); }
 	function rw() { seek(audio.currentTime - SEEK_JUMP); }
-
 
 	function title(title) {
 		ui.title.innerHTML = title || readablePath(State.get(State.key.TRACK));
@@ -104,13 +117,15 @@ export const Player = (() => {
 	}
 	function onSeekMouseDown() {
 		ui.seek.setAttribute(SEEKING_ATTR, true);
-	}
-	function onSeekMouseUp() {
-		ui.seek.removeAttribute(SEEKING_ATTR);
 
+	}
+	function onSeekChange() {
 		const value = ui.seek.value;
 		audio.currentTime = value;
 		seek(value);
+	}
+	function onSeekMouseUp() {
+		ui.seek.removeAttribute(SEEKING_ATTR);
 	}
 
 	function seekTickTock() {
@@ -176,6 +191,7 @@ export const Player = (() => {
 		rw,
 
 		onSeekMouseDown,
+		onSeekChange,
 		onSeekMouseUp,
 		onVolumeChange
 	}
