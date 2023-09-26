@@ -187,9 +187,10 @@ button {
 		overflow: hidden;
 		background: #fff url(/assets/imgs/sine.svg) 0 0 repeat-x;
 		background-size: 40px 44px;
+		rotate: 0deg;
 		animation: move 4s linear infinite;
 		filter: invert(1);
-		pointer-events: a;
+		pointer-events: none;
 	}
 }
 @keyframes move {
