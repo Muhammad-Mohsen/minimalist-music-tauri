@@ -4,6 +4,9 @@ Explorer = (function() {
 
 	const cache = new Map();
 
+	const searchContainer = document.querySelector('search-bar');
+	const searchInput = document.querySelector('search-bar input');
+
 	// EVENT BUS
 	EventBus.subscribe((event) => {
 		if (event.target == SELF) return;
@@ -80,6 +83,23 @@ Explorer = (function() {
 		}
 	}
 
+	// SEARCH
+	function toggleSearchMode(force) {
+		searchContainer.classList.toggle('show', force);
+		searchInput.value = '';
+		search();
+	}
+
+	function search() {
+		var val = searchInput.value;
+		var container = document.querySelector('explorer.current');
+
+		var entries = container.querySelectorAll('button').toArray();
+		entries.forEach(e => {
+			e.style.display = val.length < 3 || e.textContent.fuzzyCompare(val) ? '' : 'none';
+		});
+	}
+
 	// UTILs
 	async function listFiles() {
 		const current = State.get(State.key.CURRENT_DIR);
@@ -109,7 +129,10 @@ Explorer = (function() {
 		listTracks,
 
 		setRootDir,
-		onItemClick
+		onItemClick,
+
+		toggleSearchMode,
+		search,
 	}
 
 })();

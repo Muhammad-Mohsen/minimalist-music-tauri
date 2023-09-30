@@ -26,6 +26,19 @@ Array.prototype.rotate = function (steps) {
 	return [...right, ...left];
 }
 
+String.prototype.fuzzyCompare = function (possible) {
+	const lower = this.toLowerCase();
+	possible = possible.toLowerCase();
+
+	let currentIndex = 0;
+	for (let c of possible) {
+		currentIndex = lower.indexOf(c, currentIndex) + 1;
+		if (currentIndex == 0) return false;
+	}
+
+	return true;
+}
+
 document.createElementFromHTML = (htmlString) => {
 	const container = document.createElement('div');
 	container.innerHTML = htmlString.trim();

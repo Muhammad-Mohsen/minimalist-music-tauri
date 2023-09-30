@@ -80,12 +80,6 @@
 			<button class="material-symbols-outlined" onclick="BreadcrumbBar.up()">arrow_upward</button>
 			<crumb-list></crumb-list>
 		</breadcrumb-bar>
-
-		<search-bar style="display: none;">
-			<button class="material-symbols-outlined">close</button>
-			<input type="text" onchange="console.log('changed')">
-		</search-bar>
-
 		<!--
 			<queue-bar>
 				<button id="cancel-playlist"></button>
@@ -93,7 +87,6 @@
 				<button id="play-playlist"></button>
 			</queue-bar>
 		-->
-
 	</toolbar>
 
 	<!-- EXPLORER - two to do transition animations...actually three are needed -->
@@ -111,10 +104,15 @@
 	</button>
 
 	<bottom-bar class="elev">
-		<button class="collapse material-symbols-outlined" onclick="Explorer.setRootDir()">library_music</button>
-		<button class="collapse material-symbols-outlined" onclick="">search</button>
-		<button class="collapse material-symbols-outlined" onclick="MainWindow.expandCollapse()">expand_less</button>
+		<button class="material-symbols-outlined" onclick="Explorer.setRootDir()">library_music</button>
+		<button class="material-symbols-outlined" onclick="Explorer.toggleSearchMode(true)">search</button>
+		<button class="material-symbols-outlined" onclick="MainWindow.expandCollapse()">expand_less</button>
 	</bottom-bar>
+
+	<search-bar class="elev">
+		<input oninput="Explorer.search()" placeholder="Search">
+		<button class="material-symbols-outlined" onclick="Explorer.toggleSearchMode(false)">close</button>
+	</search-bar>
 
 	<!-- audio element -->
 	<audio id="audio" src=""></audio>
