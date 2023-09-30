@@ -1,18 +1,3 @@
-:root {
-    --bg: #FFF;
-	--prime-l: #DADADA;
-    --prime: #555;
-	--prime-d: #000;
-	--red: #EB5757;
-	--red-t: #EB575777;
-}
-
-@property --grad-stop {
-	syntax: "<percentage>";
-	initial-value: 0%;
-	inherits: false;
-}
-
 @font-face {
 	font-family: "Prompt";
 	font-display: swap;
@@ -54,7 +39,7 @@
 .bg { background: var(--bg); }
 .bg-prime-l { background: var(--prime-l); }
 .bg-prime { background: var(--prime); }
-.bg-prime-d { background: var(--prime-d); }
+.bg-prime-d {background: var(--prime-d);}
 
 .borderless {
 	border: none;
