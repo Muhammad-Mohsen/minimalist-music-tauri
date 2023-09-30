@@ -1,4 +1,4 @@
-export const Playlist = (() => {
+Playlist = (() => {
 
 	const repeat = {
 		NO: 0,
@@ -12,8 +12,8 @@ export const Playlist = (() => {
 	let index = 0;
 	let tracks = [];
 
-	function set(tracks) {
-
+	function set(paths) {
+		tracks = paths;
 	}
 	function contains(track) {
 

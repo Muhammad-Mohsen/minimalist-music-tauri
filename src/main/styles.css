@@ -103,8 +103,15 @@ track-info {
 }
 #album-artist { max-width: 400px; }
 
-#title { font-size: 24px; font-weight: lighter; }
-#album-artist { font-size: 10px; }
+#title {
+	font-size: 24px;
+	font-weight: lighter;
+	text-shadow: 1px 1px #FFF, -1px 1px #FFF, 1px -1px #FFF, -1px -1px #FFF
+}
+#album-artist {
+	font-size: 11px;
+	text-shadow: 1px 1px #FFF, -1px 1px #FFF, 1px -1px #FFF, -1px -1px #FFF
+}
 
 .controls-container {margin: 0 12px;}
 
@@ -185,7 +192,7 @@ button {
 		content: '';
 		inset: 2px;
 		overflow: hidden;
-		background: #fff url(/assets/imgs/sine.svg) 0 0 repeat-x;
+		background: #fff url(../assets/imgs/sine.svg) 0 0 repeat-x;
 		background-size: 40px 44px;
 		rotate: 0deg;
 		animation: move 4s linear infinite;

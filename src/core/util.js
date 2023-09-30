@@ -1,6 +1,13 @@
 Element.prototype.on = (type, handler) => this.addEventListener(type, handler);
 Element.prototype.isVisible = () => this.offsetWidth > 1 && this.offsetHeight > 1;
 
+NodeList.prototype.toArray = function () {
+	return [...this];
+}
+HTMLCollection.prototype.toArray = function () {
+	return [...this];
+}
+
 document.createElementFromHTML = (htmlString) => {
 	const container = document.createElement('div');
 	container.innerHTML = htmlString.trim();
@@ -29,7 +36,7 @@ Math.rand = function (min, max) {
 }
 
 // thanks https://codepen.io/rantrix/pen/dpZLXX
-export function easeIO(from, to, duration, callback) {
+function easeIO(from, to, duration, callback) {
 
 	const start = new Date().getTime();
 
@@ -71,6 +78,6 @@ class When {
 	}
 }
 
-export function when(param) {
+function when(param) {
 	return new When(param);
 }

@@ -1,4 +1,4 @@
-export const quotes = [
+quotes = [
     "'I’m Commander Shepard, and this is my favorite store on the Citadel!' – Mass Effect 2",
     "'It’s time to kick ass and chew bubble gum…and I’m all outta gum.' – Duke Nukem",
     "'What is a man? A Miserable little pile of secrets!' – Castlevania: Symphony of the Night",

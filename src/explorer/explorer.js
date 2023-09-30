@@ -1,9 +1,4 @@
-import { EventBus } from "../core/event-bus";
-import { Native } from "../core/native";
-import { State } from "../core/state";
-import { when } from "../core/util";
-
-export const Explorer = (function() {
+Explorer = (function() {
 
 	const SELF = EventBus.target.EXPLORER;
 
@@ -14,7 +9,13 @@ export const Explorer = (function() {
 		if (event.target == SELF) return;
 
 		when(event.type)
-			.is(EventBus.type.DIR_CHANGE, () => update());
+			.is(EventBus.type.DIR_CHANGE, () => update())
+			.is(EventBus.type.PLAY_ITEM, () => {
+				const path = State.get(State.key.TRACK);
+				// const target = document.querySelector(`[path="${path.replace(/\\\\/g, '\\')}"]`); // doesn't work
+				const target = document.querySelectorAll('explorer.current button').toArray().find(f => f.getAttribute('path') == path);
+				if (target) select(target);
+			});
 	});
 
 	function goto(dir) {
@@ -91,6 +92,10 @@ export const Explorer = (function() {
 
 		return files;
 	}
+	function listTracks() {
+		const files = document.querySelectorAll('explorer.current button').toArray();
+		return files.filter(f => f.querySelector('i').innerHTML == 'music_note').map(f => f.getAttribute('path'));
+	}
 	function isAtRoot() {
 		return State.get(State.key.CURRENT_DIR).length <= State.get(State.key.ROOT_DIR).length;
 	}
@@ -101,6 +106,7 @@ export const Explorer = (function() {
 	return {
 		goto,
 		isAtRoot,
+		listTracks,
 
 		setRootDir,
 		onItemClick

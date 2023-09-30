@@ -1,9 +1,7 @@
-import { EventBus } from "../core/event-bus";
-
 // wraps navigator.mediaSession
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaSession
 // https://web.dev/media-session/
-export const MediaSession = (() => {
+Session = (() => {
 
 	const SELF = EventBus.target.SESSION;
 

@@ -1,11 +1,4 @@
-import { EventBus } from '../core/event-bus';
-import { Native } from '../core/native';
-import { State } from '../core/state';
-import { when } from '../core/util';
-import { Metadata } from '../core/metadata/metadata';
-import { Visualizer } from './visualizer.js';
-
-export const Player = (() => {
+Player = (() => {
 
 	const SELF = EventBus.target.PLAYER;
 	const SEEK_JUMP = 60; // 1 minute
@@ -13,7 +6,7 @@ export const Player = (() => {
 
 	const audio = new Audio();
 
-	let ticker;
+	let tickerTimeout;
 
 	const ui = {
 		title: document.querySelector('#title'),
@@ -34,50 +27,64 @@ export const Player = (() => {
 		when(event.type)
 			.is(EventBus.type.PLAY_ITEM, async () => {
 				const path = State.get(State.key.TRACK);
-				const src = Native.FS.pathToSrc(path);
-
-				load(src, true);
-
-				// UI
-				// const metadataWorker = new Worker('src/core/metadata/metadata.js');
-				// metadataWorker.postMessage(src);
-				// metadataWorker.onmessage = (event) => {
-				// 	const metadata = JSON.parse(event.data);
-
-				// 	title(metadata.common.title);
-				// 	albumArtist(metadata.common.album, metadata.common.artist);
-				// 	seek(0, metadata.format.duration);
-
-				// 	metadataWorker.terminate();
-				// }
-
-				setTimeout(() => {
-					Metadata.fromSrc(src).then(metadata => {
-						title(metadata.common.title);
-						albumArtist(metadata.common.album, metadata.common.artist);
-						seek(0, metadata.format.duration);
-					});
-				}, 3000);
-
-				// getBuffer(src).then(visualizerBuffer => Visualizer.generate(visualizerBuffer));
+				Playlist.set(Explorer.listTracks());
+				load(path, true);
 			});
 	});
 
 	audio.onended = function (event) {
-		// TODO play next
+		playNext(true);
 	}
-	audio.oncanplay = function (event) {
+
+	audio.onloadeddata = function () {
 		ui.playPause.classList.remove('loading');
 		playPause(audio.autoplay);
 	}
 
-	async function load(src, auto) {
-		ui.playPause.classList.add('loading');
+	async function load(path, auto) {
+		const src = Native.FS.pathToSrc(path);
 
 		audio.pause();
 		seek(0);
 		audio.src = src;
 		audio.autoplay = auto;
+
+		let metadata = await MetadataStore.get(path);
+		if (metadata) {
+			title(metadata.title);
+			albumArtist(metadata.album, metadata.artist);
+			seek(0, metadata.duration);
+
+			Visualizer.fromData(metadata.visualization);
+
+			// TODO chapters
+			// TODO pic
+		}
+
+		if (!metadata) {
+			ui.playPause.classList.add('loading');
+
+			setTimeout(async () => {
+				metadata = await Metadata.fromSrc(src);
+				title(metadata.common.title);
+				albumArtist(metadata.common.album, metadata.common.artist);
+				seek(0, metadata.format.duration);
+
+				const buffer = await getBuffer(src)
+				const visualization = await Visualizer.fromBuffer(buffer);
+
+				MetadataStore.set({
+					path: path,
+					title: metadata.common.title,
+					album: metadata.common.album,
+					artist: metadata.common.artist,
+					duration: metadata.format.duration,
+					visualization: visualization
+				});
+
+			}, 250);
+		}
+
 	}
 
 	function playPause(force) {
@@ -86,7 +93,24 @@ export const Player = (() => {
 			: (audio.paused ? audio.play() : audio.pause());
 
 		ui.playPause.classList.toggle('pause', !audio.paused);
-		seekTickTock();
+		ticker();
+	}
+
+	function playNext(onComplete) {
+		const path = Playlist.getNext(onComplete);
+		if (!path) return;
+
+		State.set(State.key.TRACK, path);
+		EventBus.dispatch({ type: EventBus.type.PLAY_ITEM, target: SELF });
+		load(path, true);
+	}
+	function playPrev() {
+		const path = Playlist.getPrev(true);
+		if (!path) return;
+
+		State.set(State.key.TRACK, path);
+		load(path, true);
+		EventBus.dispatch({ type: EventBus.type.PLAY_ITEM, target: SELF });
 	}
 
 	// not used
@@ -117,24 +141,25 @@ export const Player = (() => {
 	}
 	function onSeekMouseDown() {
 		ui.seek.setAttribute(SEEKING_ATTR, true);
-
+		audio.muted = true; // mute the thing while seeking so that it doesn't squeak
 	}
-	function onSeekChange() {
+	function onSeekChange() { // user-initiated event
 		const value = ui.seek.value;
 		audio.currentTime = value;
 		seek(value);
 	}
 	function onSeekMouseUp() {
 		ui.seek.removeAttribute(SEEKING_ATTR);
+		audio.muted = false;
 	}
 
-	function seekTickTock() {
-		clearTimeout(ticker);
-		ticker = setTimeout(() => {
+	function ticker() {
+		clearTimeout(tickerTimeout);
+		tickerTimeout = setTimeout(() => {
 			if (audio.paused) return;
 
 			if (!ui.seek.hasAttribute(SEEKING_ATTR)) seek(audio.currentTime);
-			seekTickTock(audio);
+			ticker(audio);
 
 		}, 1000);
 	}
@@ -143,12 +168,12 @@ export const Player = (() => {
 		const value = ui.volume.value;
 
 		audio.volume = value;
-
 		updateRange(ui.volume);
-
-		if (value == 0) ui.volumeIcon.innerHTML = 'volume_mute';
-		else if (value < 0.5) ui.volumeIcon.innerHTML = 'volume_down';
-		else ui.volumeIcon.innerHTML = 'volume_up';
+		if (value) audio.muted = false;
+	}
+	function toggleMute() {
+		audio.muted = !audio.muted;
+		ui.volumeIcon.innerHTML = audio.muted ? 'volume_off' : 'volume_up';
 	}
 
 	function shuffle(shuffle) {
@@ -185,6 +210,8 @@ export const Player = (() => {
 	return {
 		load,
 		playPause,
+		playNext,
+		playPrev,
 
 		seek,
 		ff,
@@ -193,7 +220,8 @@ export const Player = (() => {
 		onSeekMouseDown,
 		onSeekChange,
 		onSeekMouseUp,
-		onVolumeChange
+		onVolumeChange,
+		toggleMute,
 	}
 
 })();

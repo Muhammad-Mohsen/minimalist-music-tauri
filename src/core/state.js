@@ -1,8 +1,4 @@
-import { Native } from "./native";
-import { Prefs } from "./prefs";
-import { quotes } from "./quotes";
-
-export const State = (() => {
+State = (() => {
 
 	const key = {
 		EXPANDED: 'state-expanded',
