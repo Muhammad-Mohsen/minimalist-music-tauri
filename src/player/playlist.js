@@ -13,10 +13,12 @@ Playlist = (() => {
 	let tracks = [];
 
 	function set(paths) {
-		tracks = paths;
+		const currentIndex = paths.indexOf(State.get(State.key.TRACK));
+		tracks = paths.rotate(currentIndex * -1); // rotate the array to start at the selected track
+		index = 0;
 	}
 	function contains(track) {
-
+		return tracks.includes(track);
 	}
 
 	function getNext(onComplete) {

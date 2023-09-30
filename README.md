@@ -15,7 +15,7 @@ npm run tauri dev
 - player
 	- navigator.mediaSession
 	- DONE - playlist
-		- index issue!!
+		- DONE - index issue!!
 	- DONE - handle seek
 	- DONE - handle volume
 - DONE - update seek time + album | artist font
