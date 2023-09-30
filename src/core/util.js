@@ -8,6 +8,24 @@ HTMLCollection.prototype.toArray = function () {
 	return [...this];
 }
 
+/**
+ *
+ * @param {int} steps rotation steps (+ve for right rotations, -ve for left)
+ */
+Array.prototype.rotate = function (steps) {
+	steps = steps % this.length;
+
+	if (!steps) return this; // no rotations, just return the same thing
+
+	if (steps > 0) steps = steps - this.length; // xxxx|xx -- [steps = 2 (right rotation)] == [steps = -4 (left rotation) ==> steps - length]
+
+	steps *= -1;
+	const left = this.slice(0, steps);
+	const right = this.slice(steps, this.length);
+
+	return [...right, ...left];
+}
+
 document.createElementFromHTML = (htmlString) => {
 	const container = document.createElement('div');
 	container.innerHTML = htmlString.trim();
