@@ -9,7 +9,7 @@ explorer {
 	grid-column-start: 1;
 	display: inline-flex;
 	overflow: auto;
-	padding-bottom: 44px;
+	padding-bottom: 52px;
 	flex-direction: column;
 	opacity: 0;
 	transition: scale .3s, opacity .2s;
@@ -97,10 +97,10 @@ explorer file:hover {
 }
 [state-expanded="true"] .expand { scale: 0; }
 
-bottom-bar {
+bottom-bar, search-bar {
 	display: flex;
 	position: absolute;
-	top: 650px;
+	top: 644px;
 	left: calc(50% - 60px);
 	padding: 4px 0;
 	border-radius: 50px;
@@ -110,10 +110,24 @@ bottom-bar {
 }
 [state-expanded="true"] bottom-bar {translate: 0;}
 
-bottom-bar button {
+bottom-bar button, search-bar button {
 	color: var(--bg);
 	background: var(--prime-d);
 }
+
+search-bar {
+	inset: 584px 12px auto;
+	scale: 0 1;
+}
+search-bar input {
+    flex-grow: 1;
+    margin-inline-start: 16px;
+	border: none;
+    color: var(--bg);
+	background: var(--prime-d);
+    outline: none;
+}
+search-bar.show { scale: 1; }
 
 explorer::-webkit-scrollbar {
     width: 16px;
