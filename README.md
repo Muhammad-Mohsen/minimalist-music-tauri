@@ -14,8 +14,18 @@ npm run tauri dev
 	- DONE - explorer item actions
 - player
 	- navigator.mediaSession
-	- playlist
-	- handle seek
-	- handle volume
+	- DONE - playlist
+		- index issue!!
+	- DONE - handle seek
+	- DONE - handle volume
 - DONE - update seek time + album | artist font
 - DONE - update album | artist placeholder to "Hello..."?
+- Restoring state
+	- volume
+	- seek position
+	- track
+	- DONE - dir
+- search
+- chapters
+- shortcuts
+- pointer-events with title/album+artist
