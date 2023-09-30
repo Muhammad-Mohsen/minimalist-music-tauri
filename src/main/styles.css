@@ -1,15 +1,13 @@
+/* TODO separate positioning/sizing from theming!!! */
 /* WINDOW */
 body { overflow: hidden; }
 .layer-controls { z-index: 1; }
+
 main {
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	border-radius: 12px;
-	border: 2px solid var(--prime-l);
-	background: var(--bg);
 	overflow: hidden;
-	font-family: Prompt;
 	max-width: 525px;
 	min-height: 180px;
 	height: 100vh;
@@ -20,72 +18,22 @@ window-controls {
 	top: 0;
 	right: 0;
 }
-window-controls button {
-	width: 40px;
-	height: 40px;
-	margin: 0;
-	border-radius: 0 0 6px 6px;
-	background: transparent;
-}
-button.close-window {
-	border-radius: 0 10px 0 6px;
-}
-window-controls button:hover {
-	background: var(--prime-l);
-	box-shadow: none !important;
-}
-button.close-window:hover {
-	background: var(--red) !important;
-	color: var(--bg) !important;
-}
 
 /* SLIDER */
 input[type=range] {
 	-webkit-appearance: none;
 	appearance: none;
 	width: 100%;
-	height: 2px;
 	margin: 0;
-	background: var(--prime-l);
-	background: linear-gradient(to right, var(--prime-d) 0%, var(--prime-d) 50%, var(--prime-l) 50%, var(--prime-l) 100%);
 	outline: none;
 }
-input[type=range]::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	appearance: none;
-	width: 6px;
-	height: 12px;
-	border: 2px solid var(--bg);
-	background: var(--prime-d);
-	transition: .2s;
-}
-input[type=range]::-webkit-slider-thumb:hover { height: 16px; }
 
 /* BUTTONS */
 button {
-	min-width: 32px;
-	min-height: 32px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 50px;
-	border: none;
 	outline: none;
-	background: var(--bg);
-	background: radial-gradient(circle at center, var(--prime-l) var(--grad-stop), var(--bg) var(--grad-stop));
-	transition: all .2s, box-shadow .5s .1s, --grad-stop .4s;
-}
-button:not(.fab):hover {
-	--grad-stop: 100%;
-	box-shadow: 0 0 0 2px var(--prime-l);
-}
-
-.fab {
-	height: 48px;
-	width: 48px;
-	padding-inline-start: 2px !important;
-	font-size: 40px;
-	z-index: 1;
 }
 
 track-info {
@@ -102,16 +50,6 @@ track-info {
 	white-space: nowrap;
 }
 #album-artist { max-width: 400px; }
-
-#title {
-	font-size: 24px;
-	font-weight: lighter;
-	text-shadow: 1px 1px #FFF, -1px 1px #FFF, 1px -1px #FFF, -1px -1px #FFF
-}
-#album-artist {
-	font-size: 11px;
-	text-shadow: 1px 1px #FFF, -1px 1px #FFF, 1px -1px #FFF, -1px -1px #FFF
-}
 
 .controls-container {margin: 0 12px;}
 
@@ -143,14 +81,6 @@ button {
 	justify-content: flex-end;
 	margin-inline-start: auto;
 }
-.seek-container div {
-	border-radius: 6px;
-	border: 2px solid var(--prime-d);
-}
-.seek-container label {
-	padding: 1px 6px;
-	border-radius: 4px;
-}
 
 #wave {
 	position: absolute;
@@ -178,7 +108,6 @@ button {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		border-radius: 50px;
 		font-size: 40px;
 		transition: rotate .2s ease-out;
 	}
@@ -189,18 +118,7 @@ button {
 	}
 	&.loading { pointer-events: none; }
 	&.loading::before {
-		content: '';
-		inset: 2px;
-		overflow: hidden;
-		background: #fff url(../assets/imgs/sine.svg) 0 0 repeat-x;
-		background-size: 40px 44px;
-		rotate: 0deg;
-		animation: move 4s linear infinite;
-		filter: invert(1);
 		pointer-events: none;
 	}
 }
-@keyframes move {
-	0% { background-position: 0 0; }
-	100% { background-position: -100px 0; }
-}
+
