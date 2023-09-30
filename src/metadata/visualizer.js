@@ -1,17 +1,17 @@
 // thanks, https://css-tricks.com/making-an-audio-waveform-visualizer-with-vanilla-javascript/
 // and https://codepen.io/andrewscofield/pen/oGyrEv
 
-export const Visualizer = (() => {
+Visualizer = (() => {
 
 	const svg = document.querySelector('#wave');
 	const clipPath = svg.querySelector('clipPath');
 	const gradientStops = [...document.querySelectorAll('#progress-gradient stop')];
 
 	const config = {
-		SAMPLE_COUNT: 103,
-		WIDTH: 2,
+		SAMPLE_COUNT: 261,
+		WIDTH: 1,
 		MAX_HEIGHT: 70,
-		GAP: 5,
+		GAP: 2,
 	}
 
 	function sample(buffer) {
@@ -35,7 +35,7 @@ export const Visualizer = (() => {
   		return samples.map(s => s * multiplier);
 	}
 
-	async function generate(buffer) {
+	async function fromBuffer(buffer) {
 
 		svg.classList.remove('done');
 
@@ -43,7 +43,14 @@ export const Visualizer = (() => {
 		const normalized = normalize(samples);
 
 		clipPath.innerHTML = '';
-		normalized.forEach((s, i) => {
+		fromData(normalized);
+
+		return normalized;
+	}
+
+	function fromData(data) {
+		clipPath.innerHTML = '';
+		data.forEach((s, i) => {
 			const x = i * config.GAP;
 			const line = `<rect x="${x}" y="0" height="${s}" width="${config.WIDTH}" fill="#000"></rect>`;
 			clipPath.insertAdjacentHTML('beforeend', line);
@@ -57,7 +64,8 @@ export const Visualizer = (() => {
 	}
 
 	return {
-		generate,
+		fromBuffer,
+		fromData,
 		setProgress
 	}
 

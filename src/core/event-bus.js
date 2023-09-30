@@ -1,4 +1,4 @@
-export const EventBus = (() => {
+EventBus = (() => {
 
 	/** The event `type` */
 	const type = {

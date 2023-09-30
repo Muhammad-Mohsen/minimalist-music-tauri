@@ -1,7 +1,10 @@
-import { fs, path, dialog, window, tauri } from '@tauri-apps/api'
+Native = (() => {
 
-
-export const Native = (() => {
+	const appWindow = window.__TAURI__.window.appWindow;
+	const path = window.__TAURI__.path;
+	const fs = window.__TAURI__.fs;
+	const dialog = window.__TAURI__.dialog;
+	const convertFileSrc = window.__TAURI__.tauri.convertFileSrc;
 
 	// FS
 	const PATH_SEPARATOR = '\\';
@@ -33,7 +36,7 @@ export const Native = (() => {
 	}
 
 	function pathToSrc(path) {
-		return tauri.convertFileSrc(path);
+		return convertFileSrc(path);
 	}
 
 	async function audioDir() {
@@ -46,16 +49,16 @@ export const Native = (() => {
 
 	// APP WINDOW
 	function closeWindow() {
-		window.appWindow.close();
+		appWindow.close();
 	}
 	function minimizeWindow() {
-		window.appWindow.minimize();
+		appWindow.minimize();
 	}
 	function resizeWindow(windowSize) {
-		window.appWindow.setSize(windowSize);
+		appWindow.setSize(windowSize);
 	}
 	async function windowSize() {
-		return await window.appWindow.outerSize();
+		return await appWindow.outerSize();
 	}
 
 	return {

@@ -1,15 +1,4 @@
-// import { Buffer } from "buffer";
-// import { process } from "process";
-
-import { EventBus } from "../core/event-bus";
-import { Native } from "../core/native";
-import { State } from "../core/state";
-import { easeIO } from "../core/util";
-import { Explorer } from "../explorer/explorer";
-import { Player } from "../player/player";
-import { BreadcrumbBar } from "../toolbar/breadcrumb-bar";
-
-export const MainWindow = (() => {
+MainWindow = (() => {
 
 	const SELF = EventBus.target.MAIN;
 
@@ -59,8 +48,3 @@ export const MainWindow = (() => {
 	}
 
 })();
-
-window.MainWindow = MainWindow;
-window.Explorer = Explorer;
-window.BreadcrumbBar = BreadcrumbBar;
-window.Player = Player;

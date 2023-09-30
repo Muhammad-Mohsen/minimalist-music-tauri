@@ -1,4 +1,4 @@
-export const Prefs = (() => {
+Prefs = (() => {
 
 	function write(key, val) {
 		return localStorage.setItem(key, val);

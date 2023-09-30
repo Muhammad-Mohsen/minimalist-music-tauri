@@ -1,10 +1,4 @@
-import { EventBus } from "../core/event-bus";
-import { Native } from "../core/native";
-import { State } from "../core/state";
-import { when } from "../core/util";
-import { Explorer } from "../explorer/explorer";
-
-export const BreadcrumbBar = (() => {
+BreadcrumbBar = (() => {
 
 	const SELF = EventBus.target.BREADCRUMB_BAR;
 
