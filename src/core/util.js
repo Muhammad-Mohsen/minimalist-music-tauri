@@ -31,12 +31,17 @@ String.prototype.fuzzyCompare = function (possible) {
 	possible = possible.toLowerCase();
 
 	let currentIndex = 0;
+	let matchedIndices = [];
 	for (let c of possible) {
 		currentIndex = lower.indexOf(c, currentIndex) + 1;
 		if (currentIndex == 0) return false;
+		else matchedIndices.push(currentIndex - 1);
 	}
 
-	return true;
+	return matchedIndices;
+}
+String.prototype.replaceAt = function(index, replacement) {
+	return this.substring(0, index) + replacement + this.substring(index + 1);
 }
 
 document.createElementFromHTML = (htmlString) => {
