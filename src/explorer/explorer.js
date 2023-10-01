@@ -54,7 +54,7 @@ Explorer = (function() {
 
 	function createItem(file) {
 		const icon = Native.FS.isDir(file) ? 'folder' : 'music_note'
-		return `<button path="${file.path}" ondblclick="Explorer.onItemClick(this);"><i class="material-symbols-outlined">${icon}</i>${file.name}</button>`;
+		return `<button path="${file.path}" ondblclick="Explorer.onItemClick(this);"><i class="material-symbols-outlined">${icon}</i><span>${file.name}<span></button>`;
 	}
 
 	function select(target) {
@@ -89,15 +89,22 @@ Explorer = (function() {
 		searchInput.value = '';
 		search();
 	}
-
 	function search() {
 		var val = searchInput.value;
 		var container = document.querySelector('explorer.current');
 
-		var entries = container.querySelectorAll('button').toArray();
+		var entries = container.querySelectorAll('button > span').toArray();
 		entries.forEach(e => {
-			e.style.display = val.length < 3 || e.textContent.fuzzyCompare(val) ? '' : 'none';
+			const matches = e.textContent.fuzzyCompare(val);
+			e.parentElement.style.display = matches ? '' : 'none';
+			if (matches) e.innerHTML = highlightMatches(e, matches);
 		});
+	}
+	function highlightMatches(element, matches) {
+		let html = element.textContent;
+
+		for (let i = matches.length - 1; i >= 0; i--) html = html.replaceAt(matches[i], `<b>${html[matches[i]]}</b>`);
+		return html;
 	}
 
 	// UTILs

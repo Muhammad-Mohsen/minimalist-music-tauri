@@ -55,6 +55,7 @@ explorer button {
 explorer button.selected {
 	box-shadow: 0 0 0 2px var(--prime-d) !important;
 }
+explorer button b { text-decoration: underline; }
 
 explorer file:hover {
 	/* background: var(--prime-l); */
