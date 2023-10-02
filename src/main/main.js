@@ -1,4 +1,4 @@
-MainWindow = (() => {
+var MainWindow = (() => {
 
 	const SELF = EventBus.target.MAIN;
 
@@ -36,7 +36,8 @@ MainWindow = (() => {
 		windowSize = await Native.Window.size();
 
 		await State.restore();
-		EventBus.dispatch({ target: SELF, type: EventBus.type.DIR_CHANGE })
+		EventBus.dispatch({ target: SELF, type: EventBus.type.DIR_CHANGE });
+		EventBus.dispatch({ target: SELF, type: EventBus.type.RESTORE_STATE });
 	}
 
 	return {

@@ -1,4 +1,4 @@
-Player = (() => {
+var Player = (() => {
 
 	const SELF = EventBus.target.PLAYER;
 	const SEEK_JUMP = 60; // 1 minute
@@ -25,10 +25,21 @@ Player = (() => {
 		if (event.target == SELF) return;
 
 		when(event.type)
-			.is(EventBus.type.PLAY_ITEM, async () => {
+			.is(EventBus.type.PLAY_TRACK, () => {
 				const path = State.get(State.key.TRACK);
 				Playlist.set(Explorer.listTracks());
 				load(path, true);
+			})
+			.is(EventBus.type.RESTORE_STATE, async () => {
+				const path = State.get(State.key.TRACK);
+				Playlist.set(Explorer.listTracks());
+
+				const currentTime = parseInt(State.get(State.key.SEEK));
+				await load(path, false);
+				audio.currentTime = currentTime;
+				seek(currentTime);
+
+				onVolumeChange(parseFloat(State.get(State.key.VOLUME)));
 			});
 	});
 
@@ -49,9 +60,10 @@ Player = (() => {
 		audio.src = src;
 		audio.autoplay = auto;
 
+		title();
+
 		let metadata = await MetadataStore.get(path);
 		if (metadata) {
-			title(metadata.title);
 			albumArtist(metadata.album, metadata.artist);
 			seek(0, metadata.duration);
 
@@ -66,7 +78,6 @@ Player = (() => {
 
 			setTimeout(async () => {
 				metadata = await Metadata.fromSrc(src);
-				title(metadata.common.title);
 				albumArtist(metadata.common.album, metadata.common.artist);
 				seek(0, metadata.format.duration);
 
@@ -101,7 +112,7 @@ Player = (() => {
 		if (!path) return;
 
 		State.set(State.key.TRACK, path);
-		EventBus.dispatch({ type: EventBus.type.PLAY_ITEM, target: SELF });
+		EventBus.dispatch({ type: EventBus.type.PLAY_TRACK, target: SELF });
 		load(path, true);
 	}
 	function playPrev() {
@@ -110,7 +121,7 @@ Player = (() => {
 
 		State.set(State.key.TRACK, path);
 		load(path, true);
-		EventBus.dispatch({ type: EventBus.type.PLAY_ITEM, target: SELF });
+		EventBus.dispatch({ type: EventBus.type.PLAY_TRACK, target: SELF });
 	}
 
 	// not used
@@ -138,6 +149,8 @@ Player = (() => {
 		ui.seek.value = position;
 		updateRange(ui.seek);
 		Visualizer.setProgress(position / ui.seek.max);
+
+		State.set(State.key.SEEK, position);
 	}
 	function onSeekMouseDown() {
 		ui.seek.setAttribute(SEEKING_ATTR, true);
@@ -164,12 +177,15 @@ Player = (() => {
 		}, 1000);
 	}
 
-	function onVolumeChange() {
-		const value = ui.volume.value;
+	function onVolumeChange(restoredVal) {
+		const val = restoredVal ?? ui.volume.value;
 
-		audio.volume = value;
+		if (restoredVal != undefined) ui.volume.value = val; // update the vol if restored
+		else State.set(State.key.VOLUME, val); // update the state otherwise
+
+		audio.volume = val;
 		updateRange(ui.volume);
-		if (value) audio.muted = false;
+		if (val) audio.muted = false;
 	}
 	function toggleMute() {
 		audio.muted = !audio.muted;

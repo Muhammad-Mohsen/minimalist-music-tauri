@@ -1,11 +1,11 @@
-EventBus = (() => {
+var EventBus = (() => {
 
 	/** The event `type` */
 	const type = {
 		DIR_CHANGE: 'dirchange',
-		METADATA_UPDATE: 'metadataupdate', // event to update the metadata (album|artist|total duration)
+		RESTORE_STATE: 'restorestate',
 
-		PLAY_ITEM: 'playitem',
+		PLAY_TRACK: 'playtrack',
 		PLAY_NEXT: 'playnext',
 		PLAY_PREV: 'playprev',
 		PLAY: 'play',
