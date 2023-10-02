@@ -1,4 +1,4 @@
-Native = (() => {
+var Native = (() => {
 
 	const appWindow = window.__TAURI__.window.appWindow;
 	const path = window.__TAURI__.path;

@@ -1,4 +1,4 @@
-State = (() => {
+var State = (() => {
 
 	const key = {
 		EXPANDED: 'state-expanded',

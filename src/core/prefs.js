@@ -1,4 +1,4 @@
-Prefs = (() => {
+var Prefs = (() => {
 
 	function write(key, val) {
 		return localStorage.setItem(key, val);
