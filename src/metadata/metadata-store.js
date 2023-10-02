@@ -1,12 +1,18 @@
+var MetadataStore = (function () {
 
-var MetadataStore;
-(async function () {
+	let db;
 
-	const db = await DB2('metadataDB', 1)
-		.objectStore('files', { keyPath: 'path' })
-		.open();
+	async function getDB() {
+		db = db || await DB2('metadataDB', 1)
+			.objectStore('files', { keyPath: 'path' })
+			.open();
+
+		return db;
+	}
 
 	async function get(path) {
+		db = await getDB();
+
 		try {
 			const metadata = await db.select('files', path);
 			return metadata;
@@ -17,7 +23,7 @@ var MetadataStore;
 	}
 
 	async function set(metadata) {
-		db.insert('files', metadata);
+		(await getDB()).insert('files', metadata);
 	}
 
 	return {
@@ -25,4 +31,4 @@ var MetadataStore;
 		set
 	}
 
-})().then(store => MetadataStore = store);
+})();
