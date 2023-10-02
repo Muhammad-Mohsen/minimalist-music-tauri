@@ -1,4 +1,4 @@
-Explorer = (function() {
+var Explorer = (function() {
 
 	const SELF = EventBus.target.EXPLORER;
 
@@ -13,7 +13,7 @@ Explorer = (function() {
 
 		when(event.type)
 			.is(EventBus.type.DIR_CHANGE, () => update())
-			.is(EventBus.type.PLAY_ITEM, () => {
+			.is(EventBus.type.PLAY_TRACK, () => {
 				const path = State.get(State.key.TRACK);
 				// const target = document.querySelector(`[path="${path.replace(/\\\\/g, '\\')}"]`); // doesn't work
 				const target = document.querySelectorAll('explorer.current button').toArray().find(f => f.getAttribute('path') == path);
@@ -79,7 +79,7 @@ Explorer = (function() {
 		} else {
 			select(target);
 			State.set(State.key.TRACK, target.getAttribute('path'));
-			EventBus.dispatch({ target: EventBus.target.EXPLORER, type: EventBus.type.PLAY_ITEM });
+			EventBus.dispatch({ target: EventBus.target.EXPLORER, type: EventBus.type.PLAY_TRACK });
 		}
 	}
 

@@ -22,12 +22,14 @@ npm run tauri dev
 + update seek time + album | artist font
 + update album | artist placeholder to "Hello..."?
 - Restoring state
-- 	- volume
-- 	- seek position
-- 	- track
++ 	- volume level
++ 	- seek position
++ 	- track
 +	- dir
 + search
 - chapters
 - shortcuts
 - pointer-events with title/album+artist
++ use file name instead of title
+- bug selected item lost after changing directories
 ```
