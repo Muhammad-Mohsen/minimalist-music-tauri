@@ -1,4 +1,4 @@
-Playlist = (() => {
+var Playlist = (() => {
 
 	const repeat = {
 		NO: 0,

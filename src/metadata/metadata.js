@@ -7,7 +7,7 @@
 // importScripts('music-metadata-browser.js');
 const musicMetadata = require_lib4();
 
-Metadata = (() => {
+var Metadata = (() => {
 
 	async function fromBuffer(buffer) {
 		const metadata = await musicMetadata.parseBuffer(buffer);

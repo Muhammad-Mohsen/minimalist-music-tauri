@@ -1,4 +1,4 @@
-BreadcrumbBar = (() => {
+var BreadcrumbBar = (() => {
 
 	const SELF = EventBus.target.BREADCRUMB_BAR;
 
