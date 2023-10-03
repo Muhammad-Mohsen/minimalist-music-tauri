@@ -36,5 +36,5 @@ npm run tauri dev
 +	- metadata loading
 - 	- seek restoration
 - shuffle/repeat
-- bug: playlist not set on restore
++ bug: playlist not set on restore
 ```

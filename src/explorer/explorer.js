@@ -120,9 +120,9 @@ var Explorer = (function() {
 
 		return files;
 	}
-	function listTracks() {
-		const files = document.querySelectorAll('explorer.current button').toArray();
-		return files.filter(f => f.querySelector('i').innerHTML == 'music_note').map(f => f.getAttribute('path'));
+	async function listTracks() {
+		const files = await listFiles();
+		return files.filter(f => Native.FS.isAudio(f)).map(f => f.path);
 	}
 	function isAtRoot() {
 		return State.get(State.key.CURRENT_DIR).length <= State.get(State.key.ROOT_DIR).length;
