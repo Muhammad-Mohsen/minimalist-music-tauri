@@ -21,12 +21,6 @@ var Explorer = (function() {
 			});
 	});
 
-	function goto(dir) {
-		State.set(State.key.CURRENT_DIR, dir);
-		EventBus.dispatch({ target: SELF, type: EventBus.type.DIR_CHANGE });
-		update();
-	}
-
 	// UI
 	async function update() {
 		const files = await listFiles();
@@ -53,8 +47,10 @@ var Explorer = (function() {
 	}
 
 	function createItem(file) {
-		const icon = Native.FS.isDir(file) ? 'folder' : 'music_note'
-		return `<button path="${file.path}" ondblclick="Explorer.onItemClick(this);"><i class="material-symbols-outlined">${icon}</i><span>${file.name}<span></button>`;
+		return `<button path="${file.path}" ondblclick="Explorer.onItemClick(this);" class="${State.get(State.key.TRACK) == file.path ? 'selected' : ''}">
+			<i class="material-symbols-outlined">${Native.FS.isDir(file) ? 'folder' : 'music_note'}</i>
+			<span>${file.name}<span>
+		</button>`;
 	}
 
 	function select(target) {
@@ -107,7 +103,12 @@ var Explorer = (function() {
 		return html;
 	}
 
-	// UTILs
+	// FS
+	function goto(dir) {
+		State.set(State.key.CURRENT_DIR, dir);
+		EventBus.dispatch({ target: SELF, type: EventBus.type.DIR_CHANGE });
+		update();
+	}
 	async function listFiles() {
 		const current = State.get(State.key.CURRENT_DIR);
 		let files = cache.get(current);

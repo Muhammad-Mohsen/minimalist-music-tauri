@@ -21,15 +21,20 @@ npm run tauri dev
 + 	- handle volume
 + update seek time + album | artist font
 + update album | artist placeholder to "Hello..."?
-- Restoring state
++ Restoring state
 + 	- volume level
 + 	- seek position
 + 	- track
 +	- dir
 + search
 - chapters
-- shortcuts
+- keyboard shortcuts
 - pointer-events with title/album+artist
 + use file name instead of title
-- bug selected item lost after changing directories
++ bug: selected item lost after changing directories
+- clunky cleaning
+-	- metadata loading
+- 	- seek restoration
+- shuffle/repeat
+- bug: playlist not set on restore
 ```
