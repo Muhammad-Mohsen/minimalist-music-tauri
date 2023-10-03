@@ -1,6 +1,5 @@
 // thanks, https://css-tricks.com/making-an-audio-waveform-visualizer-with-vanilla-javascript/
 // and https://codepen.io/andrewscofield/pen/oGyrEv
-
 var Visualizer = (() => {
 
 	const svg = document.querySelector('#wave');
@@ -28,27 +27,24 @@ var Visualizer = (() => {
 			resolve(samples);
 		});
 	}
-
 	function normalize(samples) {
 		samples = samples.map(s => Math.abs(s));
 		const multiplier = Math.pow(Math.max(...samples), -1) * config.MAX_HEIGHT;
   		return samples.map(s => s * multiplier);
 	}
 
+	async function fromSrc(url) {
+		const buffer = await fetch(url)
+			.then((response) => response.arrayBuffer());
+
+		return fromBuffer(buffer);
+	}
 	async function fromBuffer(buffer) {
-
-		svg.classList.remove('done');
-
 		const samples = await sample(buffer);
-		const normalized = normalize(samples);
-
-		clipPath.innerHTML = '';
-		fromData(normalized);
-
-		return normalized;
+		return normalize(samples);
 	}
 
-	function fromData(data) {
+	function render(data) {
 		clipPath.innerHTML = '';
 		data.forEach((s, i) => {
 			const x = i * config.GAP;
@@ -58,25 +54,20 @@ var Visualizer = (() => {
 
 		svg.classList.add('done');
 	}
-
+	function hide() {
+		svg.classList.remove('done');
+	}
 	function setProgress(progress) {
 		gradientStops.forEach(s => s.setAttribute('offset', progress * 100 + '%'));
 	}
 
 	return {
+		fromSrc,
 		fromBuffer,
-		fromData,
+
+		render,
+		hide,
 		setProgress
 	}
 
 })();
-
-
-// test function
-function loadFile(target) {
-	const reader = new FileReader();
-	reader.readAsArrayBuffer(target.files[0]);
-	reader.onload = function (event) {
-		Visualizer.generate(event.target.result);
-	}
-}
