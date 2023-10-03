@@ -21,18 +21,18 @@ var Player = (() => {
 
 	const audio = new Audio();
 
-	EventBus.subscribe((event) => {
+	EventBus.subscribe(async(event) => {
 		if (event.target == SELF) return;
 
 		when(event.type)
-			.is(EventBus.type.PLAY_TRACK, () => {
+			.is(EventBus.type.PLAY_TRACK, async () => {
 				const path = State.get(State.key.TRACK);
-				Playlist.set(Explorer.listTracks());
 				load(path, true);
+				Playlist.set(await Explorer.listTracks());
 			})
 			.is(EventBus.type.RESTORE_STATE, async () => {
 				const path = State.get(State.key.TRACK);
-				Playlist.set(Explorer.listTracks());
+				Playlist.set(await Explorer.listTracks());
 
 				const currentTime = parseInt(State.get(State.key.SEEK));
 				await load(path, false);
