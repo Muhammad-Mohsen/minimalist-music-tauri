@@ -159,13 +159,13 @@ var Player = (() => {
 
 	function title(title) {
 		ui.title.innerHTML = title || readablePath(State.get(State.key.TRACK));
-		ui.title.setAttribute('title', title);
+		ui.title.setAttribute('title', ui.title.textContent);
 	}
 	function albumArtist(album, artist) {
 		album = album || readablePath(State.get(State.key.CURRENT_DIR)); // default to current dir for no-album-in-metadata case
 
 		ui.albumArtist.innerHTML = `<strong>${album}</strong> ${artist ? '| ' + artist : ''}`;
-		ui.albumArtist.setAttribute('title', `${album} | ${artist}`);
+		ui.albumArtist.setAttribute('title', ui.albumArtist.textContent);
 	}
 
 	function readableTime(seconds) {

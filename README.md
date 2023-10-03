@@ -29,11 +29,11 @@ npm run tauri dev
 + search
 - chapters
 - keyboard shortcuts
-- pointer-events with title/album+artist
++ pointer-events with title/album+artist
 + use file name instead of title
 + bug: selected item lost after changing directories
 - clunky cleaning
--	- metadata loading
++	- metadata loading
 - 	- seek restoration
 - shuffle/repeat
 - bug: playlist not set on restore
