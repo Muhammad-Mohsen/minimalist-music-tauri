@@ -20,13 +20,13 @@
 <main data-tauri-drag-region>
 
 	<!-- WINDOW CONTROLS -->
-	<window-controls class="window-controls layer-controls">
+	<window-controls class="window-controls">
 		<button class="material-symbols-outlined" onclick="MainWindow.minimize()">remove</button>
 		<button class="material-symbols-outlined c-red close-window" onclick="MainWindow.close()">close</button>
 	</window-controls>
 
 	<!-- TRACK INFO -->
-	<track-info class="inert layer-controls">
+	<track-info class="layer-controls" data-tauri-drag-region>
 		<label id="title" class="fw-l">Minimalist Music</label>
 		<label id="album-artist" class="c-prime ff-m">Hello...</label>
 	</track-info>

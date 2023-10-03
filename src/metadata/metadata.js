@@ -12,6 +12,8 @@ var Metadata = (() => {
 		let metadata = await MetadataStore.get(url);
 		if (metadata) return metadata;
 
+		document.querySelector('#play-pause').classList.add('loading'); // OUCH!!
+
 		// sleep for 250ms to allow the track to play before hogging the file?
 		await new Promise(resolve => setTimeout(resolve, 250));
 
