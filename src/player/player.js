@@ -4,10 +4,6 @@ var Player = (() => {
 	const SEEK_JUMP = 60; // 1 minute
 	const SEEKING_ATTR = 'seeking';
 
-	const audio = new Audio();
-
-	let tickerTimeout;
-
 	const ui = {
 		title: document.querySelector('#title'),
 		albumArtist: document.querySelector('#album-artist'),
@@ -20,6 +16,10 @@ var Player = (() => {
 		repeat: document.querySelector('#volume-icon'),
 		playPause: document.querySelector('#play-pause'),
 	};
+
+	let tickerTimeout;
+
+	const audio = new Audio();
 
 	EventBus.subscribe((event) => {
 		if (event.target == SELF) return;
@@ -43,10 +43,9 @@ var Player = (() => {
 			});
 	});
 
-	audio.onended = function (event) {
+	audio.onended = function () {
 		playNext(true);
 	}
-
 	audio.onloadeddata = function () {
 		ui.playPause.classList.remove('loading');
 		playPause(audio.autoplay);
@@ -60,42 +59,15 @@ var Player = (() => {
 		audio.src = src;
 		audio.autoplay = auto;
 
+		Visualizer.hide();
+
 		title();
 
-		let metadata = await MetadataStore.get(path);
-		if (metadata) {
-			albumArtist(metadata.album, metadata.artist);
-			seek(0, metadata.duration);
+		let metadata = await Metadata.fromSrc(src);
+		albumArtist(metadata.album, metadata.artist);
+		seek(0, metadata.duration);
 
-			Visualizer.fromData(metadata.visualization);
-
-			// TODO chapters
-			// TODO pic
-		}
-
-		if (!metadata) {
-			ui.playPause.classList.add('loading');
-
-			setTimeout(async () => {
-				metadata = await Metadata.fromSrc(src);
-				albumArtist(metadata.common.album, metadata.common.artist);
-				seek(0, metadata.format.duration);
-
-				const buffer = await getBuffer(src)
-				const visualization = await Visualizer.fromBuffer(buffer);
-
-				MetadataStore.set({
-					path: path,
-					title: metadata.common.title,
-					album: metadata.common.album,
-					artist: metadata.common.artist,
-					duration: metadata.format.duration,
-					visualization: visualization
-				});
-
-			}, 250);
-		}
-
+		Visualizer.render(metadata.visualization);
 	}
 
 	function playPause(force) {
@@ -106,7 +78,6 @@ var Player = (() => {
 		ui.playPause.classList.toggle('pause', !audio.paused);
 		ticker();
 	}
-
 	function playNext(onComplete) {
 		const path = Playlist.getNext(onComplete);
 		if (!path) return;
@@ -123,20 +94,29 @@ var Player = (() => {
 		load(path, true);
 		EventBus.dispatch({ type: EventBus.type.PLAY_TRACK, target: SELF });
 	}
-
-	// not used
 	function ff() { seek(audio.currentTime + SEEK_JUMP); }
 	function rw() { seek(audio.currentTime - SEEK_JUMP); }
 
-	function title(title) {
-		ui.title.innerHTML = title || readablePath(State.get(State.key.TRACK));
-		ui.title.setAttribute('title', title);
-	}
-	function albumArtist(album, artist) {
-		album = album || readablePath(State.get(State.key.CURRENT_DIR)); // default to current dir for no-album-in-metadata case
+	function onVolumeChange(restoredVal) {
+		const val = restoredVal ?? ui.volume.value;
 
-		ui.albumArtist.innerHTML = `<strong>${album}</strong> ${ artist ? '| ' + artist : ''}`;
-		ui.albumArtist.setAttribute('title', `${album} | ${artist}`);
+		if (restoredVal != undefined) ui.volume.value = val; // update the vol if restored
+		else State.set(State.key.VOLUME, val); // update the state otherwise
+
+		audio.volume = val;
+		updateRange(ui.volume);
+		if (val) audio.muted = false;
+	}
+	function toggleMute() {
+		audio.muted = !audio.muted;
+		ui.volumeIcon.innerHTML = audio.muted ? 'volume_off' : 'volume_up';
+	}
+
+	function shuffle(shuffle) {
+
+	}
+	function repeat(mode) {
+
 	}
 
 	function seek(position, duration) {
@@ -177,26 +157,15 @@ var Player = (() => {
 		}, 1000);
 	}
 
-	function onVolumeChange(restoredVal) {
-		const val = restoredVal ?? ui.volume.value;
-
-		if (restoredVal != undefined) ui.volume.value = val; // update the vol if restored
-		else State.set(State.key.VOLUME, val); // update the state otherwise
-
-		audio.volume = val;
-		updateRange(ui.volume);
-		if (val) audio.muted = false;
+	function title(title) {
+		ui.title.innerHTML = title || readablePath(State.get(State.key.TRACK));
+		ui.title.setAttribute('title', title);
 	}
-	function toggleMute() {
-		audio.muted = !audio.muted;
-		ui.volumeIcon.innerHTML = audio.muted ? 'volume_off' : 'volume_up';
-	}
+	function albumArtist(album, artist) {
+		album = album || readablePath(State.get(State.key.CURRENT_DIR)); // default to current dir for no-album-in-metadata case
 
-	function shuffle(shuffle) {
-
-	}
-	function repeat(mode) {
-
+		ui.albumArtist.innerHTML = `<strong>${album}</strong> ${artist ? '| ' + artist : ''}`;
+		ui.albumArtist.setAttribute('title', `${album} | ${artist}`);
 	}
 
 	function readableTime(seconds) {
@@ -216,11 +185,6 @@ var Player = (() => {
 		const parse = target.max <= 1 ? parseFloat : parseInt;
 		const pos = parse(target.value) / parse(target.max) * 100;
 		target.style.background = `linear-gradient(to right, var(--prime-d) 0%, var(--prime-d) ${pos}%, var(--prime-l) ${pos}%, var(--prime-l) 100%)`;
-	}
-
-	async function getBuffer(url) {
-		return await fetch(url)
-  			.then((response) => response.arrayBuffer());
 	}
 
 	return {
