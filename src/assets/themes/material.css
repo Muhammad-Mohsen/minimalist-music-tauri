@@ -97,7 +97,7 @@ button:not(.fab):hover {
 		content: '';
 		inset: 2px;
 		overflow: hidden;
-		background: #fff url(../imgs/sine.svg) 0 0 repeat-x;
+		background: #FFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 5'%3E%3Cpath fill='none' fill-rule='evenodd' stroke='%23000' d='M0 4c1.82 0 1.75-3 3.5-3S5.25 4 7 4s1.789-3 3.5-3c1.75 0 1.75 3 3.5 3'/%3E%3C/svg%3E") 0 0 repeat-x;
 		background-size: 40px 44px;
 		rotate: 0deg;
 		animation: move 4s linear infinite;
