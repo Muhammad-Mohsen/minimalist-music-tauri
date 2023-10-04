@@ -130,6 +130,9 @@ search-bar input {
 }
 search-bar.show { scale: 1; }
 
+/* remove the double shadow when the search bar is displayed on top of the bottom bar */
+bottom-bar:has(+ search-bar.show) { opacity: 0; }
+
 explorer::-webkit-scrollbar {
     width: 16px;
     background: transparent;
