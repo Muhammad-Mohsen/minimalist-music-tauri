@@ -35,7 +35,7 @@ var EventBus = (() => {
 		UI: 5,
 	}
 
-	let subscribers = []; // a regular ol' array will do
+	const subscribers = []; // a regular ol' array will do
 
 	/**
 	 * Subscribe to the event bus. Subscribes to _ALL_ event types
