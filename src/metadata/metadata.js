@@ -1,11 +1,7 @@
 const musicMetadata = require_lib4();
 
 var Metadata = (() => {
-
-	async function fromBuffer(buffer) {
-		const metadata = await musicMetadata.parseBuffer(buffer);
-		return metadata;
-	}
+	const inflight = {}; // inflight requests
 
 	async function fromSrc(url) {
 
@@ -13,6 +9,10 @@ var Metadata = (() => {
 		if (metadata) return metadata;
 
 		document.querySelector('#play-pause').classList.add('loading'); // OUCH!!
+
+		// if there's already a metadata request inflight, promise that we'd return it later
+		if (url in inflight) return new Promise((resolve) => inflight[url].push(resolve));
+		inflight[url] = [];
 
 		// sleep for 250ms to allow the track to play before hogging the file?
 		await new Promise(resolve => setTimeout(resolve, 250));
@@ -33,11 +33,14 @@ var Metadata = (() => {
 
 		MetadataStore.set(metadata);
 
+		// resolve pending promises, and clear them
+		inflight[url]?.forEach(r => r(metadata));
+		delete inflight[url];
+
 		return metadata;
 	}
 
 	return {
-		fromBuffer,
 		fromSrc
 	}
 

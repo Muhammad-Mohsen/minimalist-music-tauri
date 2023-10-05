@@ -13,8 +13,8 @@ npm run tauri dev
 + 	- bloop the expand button + add buttons to the bottom (root folder + search + collapse)...with bloop animation as well
 + 	- explorer item style
 + 	- explorer item actions
-- player
-- 	- navigator.mediaSession
++ player
++ 	- navigator.mediaSession
 + 	- playlist
 + 		- index issue!!
 + 	- handle seek
@@ -37,4 +37,9 @@ npm run tauri dev
 - 	- seek restoration
 - shuffle/repeat
 + bug: playlist not set on restore
+- bug: handle control clicks when tracks aren't set
 ```
+## Notes
+### Using WebWorkers
+I couldn't use webworkers for doing the visualization because they don't have access to the AudioContext API
+And since I'm already storing the metadata, it just didn't matter to just move the music-metadata call to a webworker
