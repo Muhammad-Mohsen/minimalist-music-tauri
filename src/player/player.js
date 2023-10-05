@@ -40,7 +40,11 @@ var Player = (() => {
 				seek(currentTime);
 
 				onVolumeChange(parseFloat(State.get(State.key.VOLUME)));
-			});
+			})
+			.is(EventBus.type.PLAY, () => playPause(true, 'suppress'))
+			.is(EventBus.type.PAUSE, () => playPause(false, 'suppress'))
+			.is(EventBus.type.PLAY_NEXT, () => playNext(false))
+			.is(EventBus.type.PLAY_PREV, () => playPrev())
 	});
 
 	audio.onended = function () {
@@ -70,13 +74,15 @@ var Player = (() => {
 		Visualizer.render(metadata.visualization);
 	}
 
-	function playPause(force) {
+	function playPause(force, suppress) {
 		force != undefined
 			? (force ? audio.play() : audio.pause())
 			: (audio.paused ? audio.play() : audio.pause());
 
 		ui.playPause.classList.toggle('pause', !audio.paused);
 		ticker();
+
+		if (!suppress) EventBus.dispatch({ type: force ? EventBus.type.PLAY : EventBus.type.PAUSE, target: SELF });
 	}
 	function playNext(onComplete) {
 		const path = Playlist.getNext(onComplete);
