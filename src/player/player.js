@@ -1,7 +1,7 @@
 var Player = (() => {
 
 	const SELF = EventBus.target.PLAYER;
-	const SEEK_JUMP = 60; // 1 minute
+	const SEEK_JUMP = 10; // in seconds
 	const SEEKING_ATTR = 'seeking';
 
 	const ui = {
@@ -45,6 +45,10 @@ var Player = (() => {
 			.is(EventBus.type.PAUSE, () => playPause(false, 'suppress'))
 			.is(EventBus.type.PLAY_NEXT, () => playNext(false))
 			.is(EventBus.type.PLAY_PREV, () => playPrev())
+			.is(EventBus.type.FROM_THE_TOP, () => { audio.currentTime = 0; seek(0); })
+			.is(EventBus.type.PLAY_PAUSE, () => playPause())
+			.is(EventBus.type.FF, () => ff())
+			.is(EventBus.type.RW, () => rw())
 	});
 
 	audio.onended = function () {
@@ -100,8 +104,14 @@ var Player = (() => {
 		load(path, true);
 		EventBus.dispatch({ type: EventBus.type.PLAY_TRACK, target: SELF });
 	}
-	function ff() { seek(audio.currentTime + SEEK_JUMP); }
-	function rw() { seek(audio.currentTime - SEEK_JUMP); }
+	function ff() {
+		audio.currentTime += SEEK_JUMP
+		seek(audio.currentTime);
+	}
+	function rw() {
+		audio.currentTime -= SEEK_JUMP
+		seek(audio.currentTime);
+	}
 
 	function onVolumeChange(restoredVal) {
 		const val = restoredVal ?? ui.volume.value;

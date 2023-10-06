@@ -18,6 +18,8 @@ var EventBus = (() => {
 
 		FF: 'ff',
 		RW: 'rw',
+		PLAY_PAUSE: 'playpause',
+		FROM_THE_TOP: 'fromthetop',
 
 		PLAY_SELECTED: 'playselected', // play the selected items (from breadcrumb bar)
 		SELECT_MODE_ADD: 'selectmodeadd', // add a track to the selected list (activate the mode if none were selected before)
@@ -33,6 +35,7 @@ var EventBus = (() => {
 		MAIN: 3,
 		SESSION: 4,
 		UI: 5,
+		KEYBOARD: 6
 	}
 
 	const subscribers = []; // a regular ol' array will do

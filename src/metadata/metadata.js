@@ -19,7 +19,8 @@ var Metadata = (() => {
 
 		metadata = await musicMetadata.fetchFromUrl(url);
 		const visualization = await Visualizer.fromSrc(url);
-		// TODO chapters
+
+		// TODO chapters - doesn't work unfortunately!
 		// TODO pic
 
 		metadata = {
