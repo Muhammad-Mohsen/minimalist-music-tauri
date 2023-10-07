@@ -13,19 +13,18 @@ var Visualizer = (() => {
 		GAP: 2,
 	}
 
-	function sample(buffer) {
-		return new Promise(async resolve => {
-			window.AudioContext = window.AudioContext || window.webkitAudioContext;
+	async function sample(buffer) {
+		const context = new AudioContext();
+		const audioBuffer = await context.decodeAudioData(buffer);
+		const channelData = audioBuffer.getChannelData(0);
 
-			const audioBuffer = await (new AudioContext()).decodeAudioData(buffer);
-			const channelData = audioBuffer.getChannelData(0);
+		const blockSize = Math.floor(channelData.length / config.SAMPLE_COUNT);
+		const samples = [];
+		for (let i = 0; i < config.SAMPLE_COUNT; i++) samples.push(channelData[i * blockSize]);
 
-			const blockSize = Math.floor(channelData.length / config.SAMPLE_COUNT);
-			const samples = [];
-			for (let i = 0; i < config.SAMPLE_COUNT; i++) samples.push(channelData[i * blockSize]);
+		context.close();
 
-			resolve(samples);
-		});
+		return samples;
 	}
 	function normalize(samples) {
 		samples = samples.map(s => Math.abs(s));
