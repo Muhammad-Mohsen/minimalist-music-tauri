@@ -65,7 +65,7 @@ explorer file:hover {
 .lib {
 	display: flex;
 	position: fixed;
-	inset: 188px 0 56px;
+	inset: 188px 2px 64px;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
@@ -102,7 +102,7 @@ bottom-bar, search-bar {
 	display: flex;
 	position: absolute;
 	top: 644px;
-	left: calc(50% - 60px);
+	left: calc(50% - 80px);
 	padding: 4px 0;
 	border-radius: 50px;
 	background: var(--prime-d);
