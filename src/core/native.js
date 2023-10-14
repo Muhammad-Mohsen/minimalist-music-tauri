@@ -37,6 +37,7 @@ var Native = (() => {
 	}
 
 	function pathToSrc(path) {
+		if (path == 'null') return;
 		return convertFileSrc(path);
 	}
 
@@ -60,6 +61,9 @@ var Native = (() => {
 	}
 	async function windowSize() {
 		return await appWindow.outerSize();
+	}
+	function windowTitle(title) {
+		appWindow.setTitle(title);
 	}
 
 	function onWindowFocus(callback) {
@@ -94,6 +98,7 @@ var Native = (() => {
 		},
 
 		Window: {
+			title: windowTitle,
 			close: closeWindow,
 			minimize: minimizeWindow,
 			resize: resizeWindow,

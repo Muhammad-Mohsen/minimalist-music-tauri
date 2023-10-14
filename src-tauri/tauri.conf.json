@@ -7,8 +7,8 @@
 		"withGlobalTauri": true
 	},
 	"package": {
-		"productName": "minimalist-music",
-		"version": "0.1.0"
+		"productName": "Minimalist Music",
+		"version": "0.9.0"
 	},
 	"tauri": {
 		"allowlist": {
@@ -19,7 +19,8 @@
 				"close": true,
 				"minimize": true,
 				"startDragging": true,
-				"setSize": true
+				"setSize": true,
+				"setTitle": true
 			},
 			"fs": {
 				"all": true,
