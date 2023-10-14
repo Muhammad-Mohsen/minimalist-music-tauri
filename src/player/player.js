@@ -195,11 +195,12 @@ var Player = (() => {
 	}
 
 	function title(title) {
-		ui.title.innerHTML = title || readablePath(State.get(State.key.TRACK));
+		ui.title.innerHTML = title || Native.FS.readablePath(State.get(State.key.TRACK));
 		ui.title.setAttribute('title', ui.title.textContent);
+		Native.Window.title(ui.title.textContent);
 	}
 	function albumArtist(album, artist) {
-		album = album || readablePath(State.get(State.key.CURRENT_DIR)); // default to current dir for no-album-in-metadata case
+		album = album || Native.FS.readablePath(State.get(State.key.CURRENT_DIR)); // default to current dir for no-album-in-metadata case
 
 		ui.albumArtist.innerHTML = `<strong>${album}</strong> ${artist ? '| ' + artist : ''}`;
 		ui.albumArtist.setAttribute('title', ui.albumArtist.textContent);
@@ -213,9 +214,6 @@ var Player = (() => {
 		const hhMax = parseInt((ui.seek.max / 60 / 60)).toString().padStart(2, '0');
 
 		return hhMax == '00' ? `${mm}:${ss}` : `${hh}:${mm}:${ss}`;
-	}
-	function readablePath(path) {
-		return path.split(Native.FS.PATH_SEPARATOR).pop();
 	}
 
 	function updateRange(target) {

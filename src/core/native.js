@@ -9,6 +9,7 @@ var Native = (() => {
 
 	// FS
 	const PATH_SEPARATOR = '\\';
+	const AUDIO_EXT = /\.(mp3|ogg|aac|flac|wav|m4a|m4b)$/
 
 	async function openRootDirDialog() {
 		const root = await dialog.open({
@@ -45,9 +46,13 @@ var Native = (() => {
 		return await path.audioDir();
 	}
 
-	function isAudio(file) { return file.name.match(/\.(mp3|ogg|aac|flac|wav|m4a|m4b)$/) !== null; }
+	function isAudio(file) { return file.name.match(AUDIO_EXT) !== null; }
 	function isHidden(file) { return file.name.startsWith('.'); }
 	function isDir(file) { return file.children; }
+
+	function readablePath(path) {
+		return path.split(Native.FS.PATH_SEPARATOR).pop().replace(AUDIO_EXT, '');
+	}
 
 	// APP WINDOW
 	function closeWindow() {
@@ -86,6 +91,7 @@ var Native = (() => {
 	return {
 		FS: {
 			PATH_SEPARATOR,
+			AUDIO_EXT,
 
 			openRootDirDialog,
 			listFiles,
@@ -95,6 +101,8 @@ var Native = (() => {
 			isAudio,
 			isHidden,
 			isDir,
+
+			readablePath,
 		},
 
 		Window: {
