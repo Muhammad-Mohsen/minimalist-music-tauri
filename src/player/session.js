@@ -22,6 +22,8 @@ var Session = (() => {
 
 	async function update() {
 		const path = State.get(State.key.TRACK);
+		if (path == 'null') return; // on first launch, path isn't there
+
 		const src = Native.FS.pathToSrc(path);
 		const metadata = await Metadata.fromSrc(src);
 

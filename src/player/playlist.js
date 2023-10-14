@@ -39,17 +39,28 @@ var Playlist = (() => {
 		if (!tracks.length) return;
 
 		if (shuffle) index = Math.floor(Math.random() * tracks.length);
+		else if (repeatMode == repeat.YES_ONE) return tracks[index];
 		else if (index > 0) index--;
 		else index = tracks.length - 1;
 
 		return tracks[index];
 	}
 
-	function toggleShuffle() {
-		shuffle = !shuffle;
+	function toggleShuffle(force, noSave) {
+		if (force != undefined) shuffle = force == 'true';
+		else shuffle = !shuffle;
+
+		if (!noSave) State.set(State.key.SHUFFLE, shuffle);
+
+		return shuffle;
 	}
-	function toggleRepeat() {
-		repeatMode = (repeatMode + 1) % 3;
+	function toggleRepeat(force, noSave) {
+		if (force != undefined) repeatMode = parseInt(force) || 0;
+		else repeatMode = (repeatMode + 1) % 3;
+
+		if (!noSave) State.set(State.key.REPEAT, repeatMode);
+
+		return repeatMode;
 	}
 
 	return {
