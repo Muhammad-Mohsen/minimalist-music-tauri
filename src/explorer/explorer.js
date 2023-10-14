@@ -103,11 +103,24 @@ var Explorer = (function() {
 		return html;
 	}
 
+	// SCROLL
+	async function scrollToSelected() {
+		// navigate to selected dir
+		const track = State.get(State.key.TRACK);
+		const dir = track.split(Native.FS.PATH_SEPARATOR).slice(0, -1).join(Native.FS.PATH_SEPARATOR);
+		await goto(dir);
+
+		document.querySelector('.selected')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	}
+
 	// FS
 	function goto(dir) {
+		const current = State.get(State.key.CURRENT_DIR);
+		if (dir == current) return;
+
 		State.set(State.key.CURRENT_DIR, dir);
 		EventBus.dispatch({ target: SELF, type: EventBus.type.DIR_CHANGE });
-		update();
+		return update();
 	}
 	async function listFiles() {
 		const current = State.get(State.key.CURRENT_DIR);
@@ -141,6 +154,7 @@ var Explorer = (function() {
 
 		toggleSearchMode,
 		search,
+		scrollToSelected,
 	}
 
 })();
