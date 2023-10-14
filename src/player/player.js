@@ -12,8 +12,8 @@ var Player = (() => {
 		duration: document.querySelector('#duration'),
 		volume: document.querySelector('#volume-level'),
 		volumeIcon: document.querySelector('#volume-icon'),
-		shuffle: document.querySelector('#volume-icon'),
-		repeat: document.querySelector('#volume-icon'),
+		shuffle: document.querySelector('#shuffle-icon'),
+		repeat: document.querySelector('#repeat-icon'),
 		playPause: document.querySelector('#play-pause'),
 	};
 
@@ -33,6 +33,8 @@ var Player = (() => {
 			.is(EventBus.type.RESTORE_STATE, async () => {
 				const path = State.get(State.key.TRACK);
 				Playlist.set(await Explorer.listTracks());
+				shuffle(State.get(State.key.SHUFFLE));
+				repeat(State.get(State.key.REPEAT));
 
 				const currentTime = parseInt(State.get(State.key.SEEK));
 				await load(path, false);
@@ -69,6 +71,8 @@ var Player = (() => {
 
 		Visualizer.hide();
 
+		if (!initialized()) return albumArtist(State.get(State.key.ALBUM));
+
 		title();
 
 		let metadata = await Metadata.fromSrc(src);
@@ -79,6 +83,8 @@ var Player = (() => {
 	}
 
 	function playPause(force, suppress) {
+		if (!initialized()) return;
+
 		force != undefined
 			? (force ? audio.play() : audio.pause())
 			: (audio.paused ? audio.play() : audio.pause());
@@ -89,6 +95,8 @@ var Player = (() => {
 		if (!suppress) EventBus.dispatch({ type: force ? EventBus.type.PLAY : EventBus.type.PAUSE, target: SELF });
 	}
 	function playNext(onComplete) {
+		if (!initialized()) return;
+
 		const path = Playlist.getNext(onComplete);
 		if (!path) return;
 
@@ -97,6 +105,8 @@ var Player = (() => {
 		load(path, true);
 	}
 	function playPrev() {
+		if (!initialized()) return;
+
 		const path = Playlist.getPrev(true);
 		if (!path) return;
 
@@ -114,7 +124,7 @@ var Player = (() => {
 	}
 
 	function onVolumeChange(restoredVal) {
-		const val = restoredVal ?? ui.volume.value;
+		const val = (isNaN(restoredVal) || restoredVal == undefined) ? ui.volume.value : restoredVal;
 
 		if (restoredVal != undefined) ui.volume.value = val; // update the vol if restored
 		else State.set(State.key.VOLUME, val); // update the state otherwise
@@ -128,14 +138,23 @@ var Player = (() => {
 		ui.volumeIcon.innerHTML = audio.muted ? 'volume_off' : 'volume_up';
 	}
 
-	function shuffle(shuffle) {
+	function shuffle(force) {
+		const current = Playlist.toggleShuffle(force, force != undefined);
+		ui.shuffle.innerHTML = current ? 'shuffle_on' : 'shuffle';
 
 	}
-	function repeat(mode) {
-
+	function repeat(force) {
+		const current = Playlist.toggleRepeat(force, force != undefined);
+		ui.repeat.innerHTML = when(current)
+			.is(0, () => 'repeat')
+			.is(1, () => 'repeat_on')
+			.is(2, () => 'repeat_one_on')
+			.val();
 	}
 
 	function seek(position, duration) {
+		if (!initialized()) return;
+
 		if (duration) {
 			ui.seek.max = duration;
 			ui.duration.innerHTML = readableTime(duration);
@@ -153,6 +172,8 @@ var Player = (() => {
 		audio.muted = true; // mute the thing while seeking so that it doesn't squeak
 	}
 	function onSeekChange() { // user-initiated event
+		if (!initialized()) return;
+
 		const value = ui.seek.value;
 		audio.currentTime = value;
 		seek(value);
@@ -203,6 +224,10 @@ var Player = (() => {
 		target.style.background = `linear-gradient(to right, var(--prime-d) 0%, var(--prime-d) ${pos}%, var(--prime-l) ${pos}%, var(--prime-l) 100%)`;
 	}
 
+	function initialized() {
+		return State.get(State.key.TRACK) != 'null';
+	}
+
 	return {
 		load,
 		playPause,
@@ -212,6 +237,9 @@ var Player = (() => {
 		seek,
 		ff,
 		rw,
+
+		shuffle,
+		repeat,
 
 		onSeekMouseDown,
 		onSeekChange,
