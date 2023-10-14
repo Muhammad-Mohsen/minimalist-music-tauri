@@ -94,26 +94,25 @@ function easeIO(from, to, duration, callback) {
 	return animation;
 }
 
-// "when" statement
-class When {
+// "when"
+class WhenExpression {
 
-	done = false;
+	#result;
 
-    constructor(param) {
-        this.param = param;
-    }
+	constructor(param) {
+		this.param = param;
+	}
 
-	is(val, callback) {
-		if (this.done) return this;
+	is = (val, callback) => {
+		if (this.#result != undefined) return this;
 
-		if (this.param == val) {
-			callback();
-			this.done = true;
-		}
+		if (this.param == val) this.#result = callback();
 		return this;
 	}
+
+	val = () => this.#result;
 }
 
 function when(param) {
-	return new When(param);
+	return new WhenExpression(param);
 }
