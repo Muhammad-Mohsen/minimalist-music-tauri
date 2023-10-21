@@ -1,4 +1,18 @@
-/* TODO separate positioning/sizing from theming!!! */
+:root {
+	--bg: #FFF;
+	--prime-l: #DADADA;
+	--prime: #555;
+	--prime-d: #000;
+	--red: #EB5757;
+	--red-t: #EB575777;
+}
+
+@property --grad-stop {
+	syntax: "<percentage>";
+	initial-value: 0%;
+	inherits: false;
+}
+
 /* WINDOW */
 body { overflow: hidden; }
 .layer-controls { z-index: 1; }
@@ -11,13 +25,32 @@ main {
 	max-width: 525px;
 	min-height: 180px;
 	height: 100vh;
+	border-radius: 12px;
+	border: 2px solid var(--prime-l);
+	background: var(--bg);
+	font-family: Prompt;
 }
 window-controls {
 	display: flex;
 	position: absolute;
 	top: 0;
 	right: 0;
-	z-index: 2;
+}
+window-controls button {
+	width: 40px;
+	height: 40px;
+	margin: 0;
+	border-radius: 0 0 6px 6px;
+	background: transparent;
+}
+button.close-window {  border-radius: 0 10px 0 6px; }
+window-controls button:hover {
+	background: var(--prime-l);
+	box-shadow: none !important;
+}
+button.close-window:hover {
+	background: var(--red) !important;
+	color: var(--bg) !important;
 }
 
 /* SLIDER */
@@ -25,16 +58,49 @@ input[type=range] {
 	-webkit-appearance: none;
 	appearance: none;
 	width: 100%;
+	height: 2px;
 	margin: 0;
+	background: var(--prime-l) linear-gradient(to right, var(--prime-d) 0%, var(--prime-d) 50%, var(--prime-l) 50%, var(--prime-l) 100%);
 	outline: none;
 }
+input[type=range]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 6px;
+	height: 12px;
+	border: 2px solid var(--bg);
+	background: var(--prime-d);
+	transition: .2s;
+}
+input[type=range]::-webkit-slider-thumb:hover { height: 16px; }
 
 /* BUTTONS */
 button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	min-width: 32px;
+	min-height: 32px;
+	margin: 0 4px;
+	padding: 0;
+	border-radius: 50px;
+	border: none;
+	background: var(--bg);
+	background: radial-gradient(circle at center, var(--prime-l) var(--grad-stop), var(--bg) var(--grad-stop));
+	transition: all .2s, box-shadow .5s .1s, --grad-stop .4s;
 	outline: none;
+}
+button:not(.fab):hover {
+	--grad-stop: 100%;
+	box-shadow: 0 0 0 2px var(--prime-l);
+}
+
+.fab {
+	height: 48px;
+	width: 48px;
+	padding-inline-start: 2px !important;
+	font-size: 40px;
+	z-index: 1;
 }
 
 track-info {
@@ -50,14 +116,18 @@ track-info {
 	overflow: hidden;
 	white-space: nowrap;
 }
-#album-artist { max-width: 400px; }
+#title {
+	font-size: 24px;
+	font-weight: lighter;
+	text-shadow: 1px 1px #FFF, -1px 1px #FFF, 1px -1px #FFF, -1px -1px #FFF
+}
+#album-artist {
+	max-width: 400px;
+	font-size: 11px;
+	text-shadow: 1px 1px #FFF, -1px 1px #FFF, 1px -1px #FFF, -1px -1px #FFF
+}
 
 .controls-container {margin: 0 12px;}
-
-button {
-	margin: 0 4px;
-	padding: 0;
-}
 
 .volume-container {
 	flex-basis: 25%;
@@ -82,6 +152,7 @@ button {
 	justify-content: flex-end;
 	margin-inline-start: auto;
 }
+.seek-container label { padding: 0 6px; }
 
 #wave {
 	position: absolute;
@@ -109,6 +180,7 @@ button {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		border-radius: 50px;
 		font-size: 40px;
 		transition: rotate .2s ease-out;
 	}
@@ -119,7 +191,18 @@ button {
 	}
 	&.loading { pointer-events: none; }
 	&.loading::before {
+		content: '';
+		inset: 2px;
+		overflow: hidden;
+		background: #FFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 5'%3E%3Cpath fill='none' fill-rule='evenodd' stroke='%23000' d='M0 4c1.82 0 1.75-3 3.5-3S5.25 4 7 4s1.789-3 3.5-3c1.75 0 1.75 3 3.5 3'/%3E%3C/svg%3E") 0 0 repeat-x;
+		background-size: 40px 44px;
+		rotate: 0deg;
+		animation: move 4s linear infinite;
+		filter: invert(1);
 		pointer-events: none;
 	}
 }
-
+@keyframes move {
+	0% { background-position: 0 0; }
+	100% { background-position: -100px 0; }
+}
