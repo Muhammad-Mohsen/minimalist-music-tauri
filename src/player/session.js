@@ -27,7 +27,6 @@ var Session = (() => {
 		const src = Native.FS.pathToSrc(path);
 		const metadata = await Metadata.fromSrc(src);
 
-		// https://web.dev/media-session/
 		navigator.mediaSession.metadata = new MediaMetadata({
 			title: metadata.title,
 			artist: metadata.artist || '',
