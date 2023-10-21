@@ -12,17 +12,19 @@ explorer {
 	padding-bottom: 52px;
 	flex-direction: column;
 	opacity: 0;
-	transition: scale .3s, opacity .2s;
+	transition: scale .3s, opacity .2s, translate .6s;
 	pointer-events: none;
 }
 
 explorer.out { scale: 1.1; }
-explorer.in {scale: .9;}
+explorer.in { scale: .9; }
 explorer.current {
 	opacity: 1;
 	scale: 1;
+	/* translate: 0 -100px; */
 	pointer-events: all;
 }
+/* [state-expanded="true"] explorer.current { translate: 0; } */
 
 explorer file {
 	display: flex;
