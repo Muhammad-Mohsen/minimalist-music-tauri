@@ -47,7 +47,7 @@ var Explorer = (function() {
 	}
 
 	function createItem(file) {
-		return `<button path="${file.path}" ondblclick="Explorer.onItemClick(this);" class="${State.get(State.key.TRACK) == file.path ? 'selected' : ''}">
+		return `<button path="${file.path}" ondblclick="Explorer.onItemClick(this);" class="c-fg-l ${State.get(State.key.TRACK) == file.path ? 'selected' : ''}">
 			<i class="material-symbols-outlined">${Native.FS.isDir(file) ? 'folder' : 'music_note'}</i>
 			<span>${file.name}<span>
 		</button>`;

@@ -61,8 +61,8 @@
 				"resizable": false,
 				"maximizable": false,
 				"title": "Minimalist Music",
-				"width": 525,
-				"height": 188,
+				"width": 550,
+				"height": 213,
 				"decorations": false,
 				"transparent": true
 			}

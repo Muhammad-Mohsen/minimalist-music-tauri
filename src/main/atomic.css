@@ -30,16 +30,10 @@
 .row { display: flex; align-items: center; }
 .row.centered { justify-content: center; }
 
-.c-prime-l { color: var(--prime-l) }
-.c-prime { color: var(--prime) }
-.c-prime-d { color: var(--prime-d) }
+.c-fg-l { color: var(--fg-l) }
+.c-fg { color: var(--fg) }
 .c-sec { color: var(--bg) }
 .c-red { color: var(--red); }
-
-.bg { background: var(--bg); }
-.bg-prime-l { background: var(--prime-l); }
-.bg-prime { background: var(--prime); }
-.bg-prime-d {background: var(--prime-d);}
 
 .borderless {
 	border: none;
