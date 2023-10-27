@@ -9,7 +9,7 @@ explorer {
 	grid-column-start: 1;
 	display: inline-flex;
 	overflow: auto;
-	padding-bottom: 52px;
+	padding-bottom: 64px;
 	flex-direction: column;
 	opacity: 0;
 	transition: scale .3s, opacity .2s, translate .6s;
@@ -37,8 +37,8 @@ explorer file {
 	border-radius: 8px;
 	border: none;
 	outline: none;
-	background: var(--bg);
-	transition: all 0.2s, box-shadow .5s;
+	background: var(--prime);
+	transition: all 0.2s, box-shadow .4s;
 }
 
 explorer button {
@@ -47,20 +47,24 @@ explorer button {
 	flex-shrink: 0;
 	gap: 6px;
 	max-width: calc(100% - 20px);
-	margin: 4px auto 4px 12px;
-	padding: 4px 12px 4px 8px;
+	width: auto;
+	margin: 0 auto 0 12px;
+	padding: 8px 12px 8px 8px;
 	border-radius: 8px;
 	font-size: 14px;
 	text-align: start;
 }
 
 explorer button.selected {
-	box-shadow: 0 0 0 2px var(--prime-d) !important;
+	box-shadow: -2px -2px 8px 0px #5b656f inset, 2px 2px 8px 0px #24282d inset;
+	color: var(--fg-l);
+}
+explorer button:hover {
+	/* box-shadow: none !important; */
 }
 explorer button b { text-decoration: underline; }
 
 explorer file:hover {
-	/* background: var(--prime-l); */
 	box-shadow: 0 0 0 2px var(--prime);
 }
 
@@ -107,7 +111,8 @@ bottom-bar, search-bar {
 	left: calc(50% - 80px);
 	padding: 4px 0;
 	border-radius: 50px;
-	background: var(--prime-d);
+	box-shadow: var(--shadow-accent-inner), var(--shadow-outer);
+	background: var(--accent);
 	translate: 0 150%;
 	transition: all .2s, box-shadow .5s, translate .2s .3s ease-in-out;
 }
@@ -115,7 +120,10 @@ bottom-bar, search-bar {
 
 bottom-bar button, search-bar button {
 	color: var(--bg);
-	background: var(--prime-d);
+	background: transparent;
+}
+bottom-bar button:hover, search-bar button:hover {
+	box-shadow: none !important;
 }
 
 search-bar {
@@ -125,9 +133,9 @@ search-bar {
 search-bar input {
     flex-grow: 1;
     margin-inline-start: 16px;
-	border: none;
-    color: var(--bg);
-	background: var(--prime-d);
+    border: none;
+    color: var(--fg-l);
+    background: transparent;
     outline: none;
 }
 search-bar.show { scale: 1; }
@@ -135,16 +143,5 @@ search-bar.show { scale: 1; }
 /* remove the double shadow when the search bar is displayed on top of the bottom bar */
 bottom-bar:has(+ search-bar.show) { opacity: 0; }
 
-explorer::-webkit-scrollbar {
-    width: 16px;
-    background: transparent;
-}
-explorer::-webkit-scrollbar-thumb {
-    background: var(--prime-d);
-    -webkit-border-radius: 8px;
-	outline: 8px solid var(--bg);
-	outline-offset: -6px;
-}
-explorer::-webkit-scrollbar-corner {
-    background: #000;
-}
+explorer::-webkit-scrollbar { background: transparent; }
+explorer::-webkit-scrollbar-thumb { background: transparent; }

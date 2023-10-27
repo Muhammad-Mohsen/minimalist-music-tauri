@@ -1,8 +1,12 @@
+var MetadataWorker = new Worker('metadata/metadata.js');
+
 var Player = (() => {
 
 	const SELF = EventBus.target.PLAYER;
 	const SEEK_JUMP = 10; // in seconds
 	const SEEKING_ATTR = 'seeking';
+
+	let tickerTimeout;
 
 	const ui = {
 		title: document.querySelector('#title'),
@@ -16,10 +20,6 @@ var Player = (() => {
 		repeat: document.querySelector('#repeat-icon'),
 		playPause: document.querySelector('#play-pause'),
 	};
-
-	let tickerTimeout;
-
-	const audio = new Audio();
 
 	EventBus.subscribe(async(event) => {
 		if (event.target == SELF) return;
@@ -53,6 +53,7 @@ var Player = (() => {
 			.is(EventBus.type.RW, () => rw())
 	});
 
+	const audio = new Audio();
 	audio.onended = function () {
 		playNext(true);
 	}
@@ -60,6 +61,12 @@ var Player = (() => {
 		ui.playPause.classList.remove('loading');
 		playPause(audio.autoplay);
 	}
+
+	MetadataWorker.addEventListener('message', (event) => {
+		const metadata = JSON.parse(event.data);
+		albumArtist(metadata.album, metadata.artist);
+		seek(0, metadata.duration);
+	});
 
 	async function load(path, auto) {
 		const src = Native.FS.pathToSrc(path);
@@ -69,17 +76,10 @@ var Player = (() => {
 		audio.src = src;
 		audio.autoplay = auto;
 
-		Visualizer.hide();
-
 		if (!initialized()) return albumArtist(State.get(State.key.ALBUM));
 
 		title();
-
-		let metadata = await Metadata.fromSrc(src);
-		albumArtist(metadata.album, metadata.artist);
-		seek(0, metadata.duration);
-
-		Visualizer.render(metadata.visualization);
+		MetadataWorker.postMessage(src);
 	}
 
 	function playPause(force, suppress) {
@@ -163,7 +163,6 @@ var Player = (() => {
 
 		ui.seek.value = position;
 		updateRange(ui.seek);
-		Visualizer.setProgress(position / ui.seek.max);
 
 		State.set(State.key.SEEK, position);
 	}
@@ -217,9 +216,9 @@ var Player = (() => {
 	}
 
 	function updateRange(target) {
-		const parse = target.max <= 1 ? parseFloat : parseInt;
-		const pos = parse(target.value) / parse(target.max) * 100;
-		target.style.background = `linear-gradient(to right, var(--prime-d) 0%, var(--prime-d) ${pos}%, var(--prime-l) ${pos}%, var(--prime-l) 100%)`;
+		// const parse = target.max <= 1 ? parseFloat : parseInt;
+		// const pos = parse(target.value) / parse(target.max) * 100;
+		// target.style.background = `linear-gradient(to right, var(--prime-d) 0%, var(--prime-d) ${pos}%, var(--prime-l) ${pos}%, var(--prime-l) 100%)`;
 	}
 
 	function initialized() {

@@ -20,12 +20,8 @@ var Session = (() => {
 			.is(EventBus.type.PAUSE, () => setState(state.PAUSED));
 	});
 
-	async function update() {
-		const path = State.get(State.key.TRACK);
-		if (path == 'null') return; // on first launch, path isn't there
-
-		const src = Native.FS.pathToSrc(path);
-		const metadata = await Metadata.fromSrc(src);
+	MetadataWorker.addEventListener('message', (event) => {
+		const metadata = JSON.parse(event.data);
 
 		navigator.mediaSession.metadata = new MediaMetadata({
 			title: metadata.title,
@@ -33,6 +29,14 @@ var Session = (() => {
 			album: metadata.album,
 			artwork: []
 		});
+	});
+
+	async function update() {
+		const path = State.get(State.key.TRACK);
+		if (path == 'null') return; // on first launch, path isn't there
+
+		const src = Native.FS.pathToSrc(path);
+		MetadataWorker.postMessage(src);
 	}
 
 	function setState(state) {

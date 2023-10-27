@@ -10,6 +10,9 @@ npx tauri dev
 npm run tauri dev
 ```
 
+### App Icons
+run `npx tauri icon` (with an `app-icon.png` at the root) to generate app icons
+
 ## TODO
 ```diff
 + phase 1
@@ -42,7 +45,10 @@ npm run tauri dev
 - shuffle/repeat
 + bug: playlist not set on restore
 + bug: handle control clicks when tracks aren't set
-- ensure single instance https://github.com/tauri-apps/plugins-workspace/tree/v1/plugins/single-instance
++ neumorphic design
++ explorer styling during hover
++ window shadow
++ ensure single instance https://github.com/tauri-apps/plugins-workspace/tree/v1/plugins/single-instance
 
 - at some point, use Rust to get the track metadata and sample the audio to fix the perf issues
 - 	- https://ffmpeg.org/ffprobe.html

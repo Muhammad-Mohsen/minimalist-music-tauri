@@ -6,8 +6,8 @@ var MainWindow = (() => {
 	let accordionAnimation = null;
 
 	const height = {
-		COLLAPSED: 188, // value needs to be changed in tauri.conf as well
-		EXPANDED: 700,
+		COLLAPSED: 213, // value needs to be changed in tauri.conf as well
+		EXPANDED: 725,
 	}
 
 	function close() {

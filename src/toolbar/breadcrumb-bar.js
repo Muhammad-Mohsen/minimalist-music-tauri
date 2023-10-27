@@ -47,7 +47,7 @@ var BreadcrumbBar = (() => {
 
 	function crumb(path) {
 		const label = path.split(Native.FS.PATH_SEPARATOR).pop();
-		return `<button path="${path}" onclick="BreadcrumbBar.onCrumbClick(this)">${label}</button>`;
+		return `<button path="${path}" onclick="BreadcrumbBar.onCrumbClick(this)" class="c-fg-l">${label}</button>`;
 	}
 
 	function onCrumbClick(target) {

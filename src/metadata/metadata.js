@@ -1,3 +1,5 @@
+importScripts('music-metadata-browser.js', '../core/db.js', 'metadata-store.js');
+
 const musicMetadata = require_lib4();
 
 var Metadata = (() => {
@@ -14,11 +16,7 @@ var Metadata = (() => {
 		if (url in inflight) return new Promise((resolve) => inflight[url].push(resolve));
 		inflight[url] = [];
 
-		// sleep for 250ms to allow the track to play before hogging the file?
-		await new Promise(resolve => setTimeout(resolve, 250));
-
 		metadata = await musicMetadata.fetchFromUrl(url);
-		const visualization = await Visualizer.fromSrc(url);
 
 		// TODO chapters - doesn't work unfortunately!
 		// TODO pic
@@ -29,7 +27,6 @@ var Metadata = (() => {
 			album: metadata.common.album,
 			artist: metadata.common.artist,
 			duration: metadata.format.duration,
-			visualization: visualization
 		}
 
 		MetadataStore.set(metadata);
@@ -46,3 +43,9 @@ var Metadata = (() => {
 	}
 
 })();
+
+// handle the message
+onmessage = async (event) => {
+	const metadata = await Metadata.fromSrc(event.data);
+	postMessage(JSON.stringify(metadata));
+}
