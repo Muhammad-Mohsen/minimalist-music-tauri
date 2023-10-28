@@ -42,7 +42,7 @@ run `npx tauri icon` (with an `app-icon.png` at the root) to generate app icons
 - clunky cleaning
 +	- metadata loading
 - 	- seek restoration
-- shuffle/repeat
++ shuffle/repeat
 + bug: playlist not set on restore
 + bug: handle control clicks when tracks aren't set
 + neumorphic design
