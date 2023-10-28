@@ -1,17 +1,33 @@
 # Minimalist Music
 Tauri version of the minimalist music player
 
-## Building
-### Prerequisites
-Follow the instructions [here](https://tauri.app/v1/guides/getting-started/prerequisites) to install Rust, then run the below command to build the project
-```
-npx tauri dev
-# OR
-npm run tauri dev
-```
+## Features
+Nothing fancy, as the name implies
+- Music player with support for MP3, FLAC, WAV, AAC, OGG
+- Explorer view with search
+- Media session integration
+- Keyboard shortcuts
+	- <kbd>**`Space`**</kbd>: Play/Pause
+	- <kbd>**`0`**</kbd>: Seek to begining
+	- <kbd>**`←`**</kbd> / <kbd>**`→`**</kbd>: Seek jump by 10 seconds
+	- <kbd>**`CTRL`**</kbd> + <kbd>**`←`**</kbd> / <kbd>**`CTRL`**</kbd> + <kbd>**`→`**</kbd>: Play next/prev
+
+## Develop
+### Run Locally
+- Install NodeJS
+- Install Rust by following the instructions [here](https://tauri.app/v1/guides/getting-started/prerequisites)
+- Then, run the commmand `npx tauri dev`
+
+### Build
+Run the command `npx tauri build`
 
 ### App Icons
-run `npx tauri icon` (with an `app-icon.png` at the root) to generate app icons
+Run `npx tauri icon` (with an `app-icon.png` at the root) to generate app icons
+
+### Notes
+#### Using WebWorkers
+I couldn't use webworkers for doing the visualization because they don't have access to the AudioContext API
+And since I'm already storing the metadata, it just didn't matter to just move the music-metadata call to a webworker
 
 ## TODO
 ```diff
@@ -39,7 +55,7 @@ run `npx tauri icon` (with an `app-icon.png` at the root) to generate app icons
 + pointer-events with title/album+artist
 + use file name instead of title
 + bug: selected item lost after changing directories
-- clunky cleaning
+- clunky code cleaning
 +	- metadata loading
 - 	- seek restoration
 + shuffle/repeat
@@ -56,7 +72,3 @@ run `npx tauri icon` (with an `app-icon.png` at the root) to generate app icons
 -	- D:\Music + Audiobooks\MISC\BOOKS\Alien Isolation>ffprobe -print_format json -show_chapters "Alien [Isolation].m4b"
 - 	- rust-id3 -> https://github.com/polyfloyd/rust-id3
 ```
-## Notes
-### Using WebWorkers
-I couldn't use webworkers for doing the visualization because they don't have access to the AudioContext API
-And since I'm already storing the metadata, it just didn't matter to just move the music-metadata call to a webworker

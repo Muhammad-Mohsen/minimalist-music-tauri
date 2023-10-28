@@ -83,6 +83,8 @@ var Explorer = (function() {
 	function toggleSearchMode(force) {
 		searchContainer.classList.toggle('show', force);
 		searchInput.value = '';
+		if (force) searchInput.focus();
+
 		search();
 	}
 	function search() {

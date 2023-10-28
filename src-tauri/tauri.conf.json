@@ -8,7 +8,7 @@
 	},
 	"package": {
 		"productName": "Minimalist Music",
-		"version": "0.9.0"
+		"version": "1.0.0"
 	},
 	"tauri": {
 		"allowlist": {
@@ -28,9 +28,6 @@
 			},
 			"dialog": {
 				"open": true
-			},
-			"globalShortcut": {
-				"all": true
 			},
 			"path": {
 				"all": true
