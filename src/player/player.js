@@ -36,7 +36,7 @@ var Player = (() => {
 				shuffle(State.get(State.key.SHUFFLE));
 				repeat(State.get(State.key.REPEAT));
 
-				const currentTime = parseInt(State.get(State.key.SEEK));
+				const currentTime = parseInt(State.get(State.key.SEEK)) || 0;
 				await load(path, false);
 				audio.currentTime = currentTime;
 				seek(currentTime);
@@ -58,7 +58,6 @@ var Player = (() => {
 		playNext(true);
 	}
 	audio.onloadeddata = function () {
-		ui.playPause.classList.remove('loading');
 		playPause(audio.autoplay);
 	}
 

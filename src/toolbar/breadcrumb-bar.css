@@ -1,5 +1,5 @@
 [state-expanded="false"] breadcrumb-bar { pointer-events: none; }
-
+body:not([state-root-dir]) breadcrumb-bar { display: none; }
 breadcrumb-bar {
 	display: flex;
 	align-items: center;
