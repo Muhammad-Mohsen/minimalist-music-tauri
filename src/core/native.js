@@ -79,9 +79,9 @@ var Native = (() => {
 	}
 
 	// SHORTCUTS
-	function registerShortcut(keys, handler) {
+	async function registerShortcut(keys, handler) {
 		// register it on launch
-		shortcut.register(keys, handler);
+		if (!(await shortcut.isRegistered(keys))) shortcut.register(keys, handler);
 
 		// handle window events
 		onWindowBlur(async () => { if (await shortcut.isRegistered(keys)) shortcut.unregister(keys) });
