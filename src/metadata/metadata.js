@@ -10,11 +10,12 @@ var Metadata = (() => {
 		let metadata = await MetadataStore.get(url);
 		if (metadata) return metadata;
 
-		document.querySelector('#play-pause').classList.add('loading'); // OUCH!!
-
 		// if there's already a metadata request inflight, promise that we'd return it later
 		if (url in inflight) return new Promise((resolve) => inflight[url].push(resolve));
 		inflight[url] = [];
+
+		// sleep for 250ms to allow the track to play before hogging the file?
+		await new Promise(resolve => setTimeout(resolve, 250));
 
 		metadata = await musicMetadata.fetchFromUrl(url);
 
