@@ -5,7 +5,6 @@ var Native = (() => {
 	const fs = window.__TAURI__.fs;
 	const dialog = window.__TAURI__.dialog;
 	const convertFileSrc = window.__TAURI__.tauri.convertFileSrc;
-	const shortcut = window.__TAURI__.globalShortcut;
 
 	// FS
 	const PATH_SEPARATOR = '\\';
@@ -71,23 +70,6 @@ var Native = (() => {
 		appWindow.setTitle(title);
 	}
 
-	function onWindowFocus(callback) {
-		appWindow.listen("tauri://focus", ({ event, payload }) => callback(event, payload))
-	}
-	function onWindowBlur(callback) {
-		appWindow.listen("tauri://blur", ({ event, payload }) => callback(event, payload))
-	}
-
-	// SHORTCUTS
-	async function registerShortcut(keys, handler) {
-		// register it on launch
-		if (!(await shortcut.isRegistered(keys))) shortcut.register(keys, handler);
-
-		// handle window events
-		onWindowBlur(async () => { if (await shortcut.isRegistered(keys)) shortcut.unregister(keys) });
-		onWindowFocus(async () => { if (!(await shortcut.isRegistered(keys))) shortcut.register(keys, handler) });
-	}
-
 	return {
 		FS: {
 			PATH_SEPARATOR,
@@ -111,12 +93,6 @@ var Native = (() => {
 			minimize: minimizeWindow,
 			resize: resizeWindow,
 			size: windowSize,
-			onFocus: onWindowFocus,
-			onBlur: onWindowBlur,
-		},
-
-		shortcut: {
-			register: registerShortcut,
 		}
 	}
 

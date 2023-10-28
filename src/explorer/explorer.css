@@ -6,6 +6,15 @@ explorer-container {
 	grid-template-columns: 1fr;
 }
 
+explorer-container::after {
+	content: '';
+	position: relative;
+	grid-area: 1 / 1;
+	background: linear-gradient(0, var(--bg), transparent 2%, transparent 98%, var(--bg));
+	z-index: 1;
+	pointer-events: none;
+}
+
 explorer {
 	grid-row-start: 1;
 	grid-column-start: 1;
@@ -50,19 +59,18 @@ explorer button {
 	gap: 6px;
 	max-width: calc(100% - 20px);
 	width: auto;
-	margin: 0 auto 0 12px;
-	padding: 8px 12px 8px 8px;
+	margin: 2px auto 2px 12px;
+	padding: 6px 14px 6px 8px;
 	border-radius: 8px;
 	font-size: 14px;
 	text-align: start;
-	transition: all .2s, box-shadow .4s, margin .2s;
+	transition: all .2s, box-shadow .4s;
 }
 
 explorer button.selected {
-	margin: 4px auto 4px 12px;
 	box-shadow: -2px -2px 8px 0px #5b656f inset, 2px 2px 8px 0px #24282d inset;
 	color: var(--fg-l);
-	transition: all .2s, box-shadow .4s, margin .2s .3s;
+	transition: all .2s, box-shadow .4s;
 }
 
 explorer button b { text-decoration: underline; }
