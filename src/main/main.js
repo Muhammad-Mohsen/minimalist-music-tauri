@@ -32,7 +32,13 @@ var MainWindow = (() => {
 		State.set(State.key.EXPANDED, to == height.EXPANDED);
 	}
 
+	function disableContextMenu() {
+		document.addEventListener('contextmenu', event => event.preventDefault());
+	}
+
 	async function loaded() {
+		disableContextMenu();
+
 		windowSize = await Native.Window.size();
 
 		await State.restore();
