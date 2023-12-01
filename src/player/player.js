@@ -4,6 +4,7 @@ var Player = (() => {
 
 	const SELF = EventBus.target.PLAYER;
 	const SEEK_JUMP = 10; // in seconds
+	const VOLUME_JUMP = .1;
 	const SEEKING_ATTR = 'seeking';
 
 	let tickerTimeout;
@@ -51,6 +52,9 @@ var Player = (() => {
 			.is(EventBus.type.PLAY_PAUSE, () => playPause())
 			.is(EventBus.type.FF, () => ff())
 			.is(EventBus.type.RW, () => rw())
+
+			.is(EventBus.type.VOLUME_DOWN, () => onVolumeChange(audio.volume - VOLUME_JUMP))
+			.is(EventBus.type.VOLUME_UP, () => onVolumeChange(audio.volume + VOLUME_JUMP))
 	});
 
 	const audio = new Audio();

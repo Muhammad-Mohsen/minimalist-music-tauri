@@ -2,6 +2,12 @@
 
 	const SELF = EventBus.target.KEYBOARD;
 
+	// prevent space from scrolling the explorer
+	window.onkeydown = (event) => {
+		if (event.target.tagName.toUpperCase() == 'INPUT') return; // ignore key presses in the search box
+		event.preventDefault();
+	}
+
 	window.onkeyup = (event) => {
 		if (event.target.tagName.toUpperCase() == 'INPUT') return; // ignore key presses in the search box
 
@@ -18,7 +24,9 @@
 			.is('ArrowRight', () => {
 				if (event.ctrlKey) EventBus.dispatch({ type: EventBus.type.PLAY_NEXT, target: SELF })
 				else EventBus.dispatch({ type: EventBus.type.FF, target: SELF })
-			});
+			})
+			.is('NumpadAdd', () => EventBus.dispatch({ type: EventBus.type.VOLUME_UP, target: SELF }))
+			.is('NumpadSubtract', () => EventBus.dispatch({ type: EventBus.type.VOLUME_DOWN, target: SELF }))
 	}
 
 })();

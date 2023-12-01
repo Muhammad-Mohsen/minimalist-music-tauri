@@ -12,6 +12,8 @@ var EventBus = (() => {
 		PAUSE: 'pause',
 		SEEK_UPDATE: 'seekupdate',
 		VOLUME: 'volume',
+		VOLUME_DOWN: 'volumedown',
+		VOLUME_UP: 'volumeup',
 
 		TOGGLE_SHUFFLE: 'toggleshuffle',
 		TOGGLE_REPEAT: 'togglerepeat',
