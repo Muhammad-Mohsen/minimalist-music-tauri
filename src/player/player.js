@@ -68,7 +68,7 @@ var Player = (() => {
 	MetadataWorker.addEventListener('message', (event) => {
 		const metadata = JSON.parse(event.data);
 		albumArtist(metadata.album, metadata.artist);
-		seek(0, metadata.duration);
+		seek(audio.currentTime || 0, metadata.duration);
 	});
 
 	async function load(path, auto) {
