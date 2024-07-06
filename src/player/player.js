@@ -12,6 +12,7 @@ var Player = (() => {
 	const ui = {
 		title: document.querySelector('#title'),
 		albumArtist: document.querySelector('#album-artist'),
+		artwork: document.querySelector('#artwork'),
 		seek: document.querySelector('#seek'),
 		position: document.querySelector('#current-position'),
 		duration: document.querySelector('#duration'),
@@ -22,27 +23,37 @@ var Player = (() => {
 		playPause: document.querySelector('#play-pause'),
 	};
 
+	const audio = new Audio();
+
+	// EVENT HANDLERS
 	EventBus.subscribe(async(event) => {
 		if (event.target == SELF) return;
 
 		when(event.type)
 			.is(EventBus.type.PLAY_TRACK, async () => {
 				const path = State.get(State.key.TRACK);
+
+				loadingIndicator(true);
+
 				load(path, true);
 				Playlist.set(await Explorer.listTracks());
 			})
 			.is(EventBus.type.RESTORE_STATE, async () => {
 				const path = State.get(State.key.TRACK);
+				const currentTime = parseInt(State.get(State.key.SEEK)) || 0;
+
+				loadingIndicator(true);
+
 				Playlist.set(await Explorer.listTracks());
+				await load(path, false);
+
+				audio.currentTime = currentTime;
+				onVolumeChange(parseFloat(State.get(State.key.VOLUME)));
 				shuffle(State.get(State.key.SHUFFLE));
 				repeat(State.get(State.key.REPEAT));
 
-				const currentTime = parseInt(State.get(State.key.SEEK)) || 0;
-				await load(path, false);
-				audio.currentTime = currentTime;
-				seek(currentTime);
-
-				onVolumeChange(parseFloat(State.get(State.key.VOLUME)));
+				// loadeddata event, apparently, doesn't fire until the audio needs to be played! So if autoplay is false, it won't fire
+				MetadataWorker.postMessage(Native.FS.pathToSrc(path));
 			})
 			.is(EventBus.type.PLAY, () => playPause(true, 'suppress'))
 			.is(EventBus.type.PAUSE, () => playPause(false, 'suppress'))
@@ -57,19 +68,28 @@ var Player = (() => {
 			.is(EventBus.type.VOLUME_UP, () => onVolumeChange(audio.volume + VOLUME_JUMP))
 	});
 
-	const audio = new Audio();
+	MetadataWorker.addEventListener('message', (event) => {
+		const metadata = JSON.parse(event.data);
+		albumArtist(metadata.album, metadata.artist);
+		artwork(metadata.artwork);
+		seek(audio.currentTime || 0, metadata.duration);
+
+		EventBus.dispatch({
+			target: EventBus.target.PLAYER,
+			type: EventBus.type.METADATA_UPDATE,
+			data: metadata
+		});
+
+		loadingIndicator(false);
+	});
+
 	audio.onended = function () {
 		playNext(true);
 	}
 	audio.onloadeddata = function () {
 		playPause(audio.autoplay);
+		MetadataWorker.postMessage(audio.src); // do the metadata data load so as not to trip over each other
 	}
-
-	MetadataWorker.addEventListener('message', (event) => {
-		const metadata = JSON.parse(event.data);
-		albumArtist(metadata.album, metadata.artist);
-		seek(audio.currentTime || 0, metadata.duration);
-	});
 
 	async function load(path, auto) {
 		const src = Native.FS.pathToSrc(path);
@@ -79,12 +99,11 @@ var Player = (() => {
 		audio.src = src;
 		audio.autoplay = auto;
 
-		if (!initialized()) return albumArtist(State.get(State.key.ALBUM));
-
-		title();
-		MetadataWorker.postMessage(src);
+		if (initialized()) title(); // immediately show title (whilte waiting for the metadata)
+		else albumArtist(State.get(State.key.ALBUM)); // show quote
 	}
 
+	// PLAYBACK CONTROLS
 	function playPause(force, suppress) {
 		if (!initialized()) return;
 
@@ -125,22 +144,6 @@ var Player = (() => {
 		audio.currentTime -= SEEK_JUMP
 		seek(audio.currentTime);
 	}
-
-	function onVolumeChange(restoredVal) {
-		const val = (isNaN(restoredVal) || restoredVal == undefined) ? ui.volume.value : restoredVal;
-
-		if (restoredVal != undefined) ui.volume.value = val; // update the vol if restored
-		else State.set(State.key.VOLUME, val); // update the state otherwise
-
-		audio.volume = val;
-		updateRange(ui.volume);
-		if (val) audio.muted = false;
-	}
-	function toggleMute() {
-		audio.muted = !audio.muted;
-		ui.volumeIcon.innerHTML = audio.muted ? 'volume_off' : 'volume_up';
-	}
-
 	function shuffle(force) {
 		const current = Playlist.toggleShuffle(force, force != undefined);
 		ui.shuffle.innerHTML = current ? 'shuffle_on' : 'shuffle';
@@ -155,6 +158,22 @@ var Player = (() => {
 			.val();
 	}
 
+	// VOLUME
+	function onVolumeChange(restoredVal) {
+		const val = (isNaN(restoredVal) || restoredVal == undefined) ? ui.volume.value : restoredVal;
+
+		if (restoredVal != undefined) ui.volume.value = val; // update the vol if restored
+		else State.set(State.key.VOLUME, val); // update the state otherwise
+
+		audio.volume = val;
+		if (val) audio.muted = false;
+	}
+	function toggleMute() {
+		audio.muted = !audio.muted;
+		ui.volumeIcon.innerHTML = audio.muted ? 'volume_off' : 'volume_up';
+	}
+
+	// SEEK
 	function seek(position, duration) {
 		if (!initialized()) return;
 
@@ -162,11 +181,9 @@ var Player = (() => {
 			ui.seek.max = duration;
 			ui.duration.innerHTML = readableTime(duration);
 		}
+
 		ui.position.innerHTML = readableTime(position);
-
 		ui.seek.value = position;
-		updateRange(ui.seek);
-
 		State.set(State.key.SEEK, position);
 	}
 	function onSeekMouseDown() {
@@ -196,6 +213,7 @@ var Player = (() => {
 		}, 1000);
 	}
 
+	// UI TEXT STUFF
 	function title(title) {
 		ui.title.innerHTML = title || Native.FS.readablePath(State.get(State.key.TRACK));
 		ui.title.setAttribute('title', ui.title.textContent);
@@ -207,7 +225,10 @@ var Player = (() => {
 		ui.albumArtist.innerHTML = `<strong>${album}</strong> ${artist ? '| ' + artist : ''}`;
 		ui.albumArtist.setAttribute('title', ui.albumArtist.textContent);
 	}
-
+	function artwork(art) {
+		if (art) ui.artwork.setAttribute('src', art);
+		ui.artwork.classList.toggle('hidden', !art);
+	}
 	function readableTime(seconds) {
 		const ss = parseInt(seconds % 60).toString().padStart(2, '0');
 		const mm = parseInt((seconds / 60) % 60).toString().padStart(2, '0');
@@ -217,16 +238,13 @@ var Player = (() => {
 
 		return hhMax == '00' ? `${mm}:${ss}` : `${hh}:${mm}:${ss}`;
 	}
-
-	function updateRange(target) {
-		// const parse = target.max <= 1 ? parseFloat : parseInt;
-		// const pos = parse(target.value) / parse(target.max) * 100;
-		// target.style.background = `linear-gradient(to right, var(--prime-d) 0%, var(--prime-d) ${pos}%, var(--prime-l) ${pos}%, var(--prime-l) 100%)`;
+	function loadingIndicator(force) {
+		ui.albumArtist.classList.toggle('blur', force);
+		ui.duration.classList.toggle('blur', force);
+		if (force) ui.artwork.classList.add('hidden');
 	}
 
-	function initialized() {
-		return State.get(State.key.TRACK) != 'null';
-	}
+	function initialized() { return State.get(State.key.TRACK) != 'null'; }
 
 	return {
 		load,

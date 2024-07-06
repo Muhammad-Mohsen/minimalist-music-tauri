@@ -69,6 +69,9 @@ var Native = (() => {
 	function windowTitle(title) {
 		appWindow.setTitle(title);
 	}
+	function onWindowFocus(callback) {
+		appWindow.listen("tauri://focus", ({ event, payload }) => callback(event, payload))
+	}
 
 	return {
 		FS: {
@@ -93,6 +96,7 @@ var Native = (() => {
 			minimize: minimizeWindow,
 			resize: resizeWindow,
 			size: windowSize,
+			onFocus: onWindowFocus,
 		}
 	}
 

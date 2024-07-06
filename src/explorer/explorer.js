@@ -18,6 +18,9 @@ var Explorer = (function() {
 				// const target = document.querySelector(`[path="${path.replace(/\\\\/g, '\\')}"]`); // doesn't work
 				const target = document.querySelectorAll('explorer.current button').toArray().find(f => f.getAttribute('path') == path);
 				if (target) select(target);
+			})
+			.is(EventBus.type.SEARCH, () => {
+				if (State.get(State.key.EXPANDED) == 'true') toggleSearchMode(true);
 			});
 	});
 
@@ -94,7 +97,7 @@ var Explorer = (function() {
 		var entries = container.querySelectorAll('button > span').toArray();
 		entries.forEach(e => {
 			const matches = e.textContent.fuzzyCompare(val);
-			e.parentElement.style.display = matches ? '' : 'none';
+			e.parentElement.classList.toggle('hidden', !matches);
 			if (matches) e.innerHTML = highlightMatches(e, matches);
 		});
 	}

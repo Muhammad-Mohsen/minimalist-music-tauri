@@ -14,6 +14,7 @@ var EventBus = (() => {
 		VOLUME: 'volume',
 		VOLUME_DOWN: 'volumedown',
 		VOLUME_UP: 'volumeup',
+		METADATA_UPDATE: 'metadataupdate',
 
 		TOGGLE_SHUFFLE: 'toggleshuffle',
 		TOGGLE_REPEAT: 'togglerepeat',
@@ -22,6 +23,8 @@ var EventBus = (() => {
 		RW: 'rw',
 		PLAY_PAUSE: 'playpause',
 		FROM_THE_TOP: 'fromthetop',
+
+		SEARCH: 'search',
 
 		PLAY_SELECTED: 'playselected', // play the selected items (from breadcrumb bar)
 		SELECT_MODE_ADD: 'selectmodeadd', // add a track to the selected list (activate the mode if none were selected before)

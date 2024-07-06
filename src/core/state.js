@@ -36,7 +36,7 @@ var State = (() => {
 
 		set(key.TRACK, Prefs.read(key.TRACK), true);
 		set(key.DURATION, Prefs.read(key.DURATION), true);
-		set(key.ALBUM, Prefs.read(key.ALBUM) || quotes[Math.rand(0, 99)], true);
+		set(key.ALBUM, Prefs.read(key.ALBUM) || quotes[Math.randomInt(0, 99)], true);
 		set(key.ARTIST, Prefs.read(key.ARTIST), true);
 	}
 

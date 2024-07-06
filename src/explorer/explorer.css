@@ -6,15 +6,6 @@ explorer-container {
 	grid-template-columns: 1fr;
 }
 
-explorer-container::after {
-	content: '';
-	position: relative;
-	grid-area: 1 / 1;
-	background: linear-gradient(0, var(--bg), transparent 2%, transparent 98%, var(--bg));
-	z-index: 1;
-	pointer-events: none;
-}
-
 explorer {
 	grid-row-start: 1;
 	grid-column-start: 1;
@@ -23,6 +14,7 @@ explorer {
 	padding-bottom: 64px;
 	flex-direction: column;
 	opacity: 0;
+	mask-image: linear-gradient(transparent, black 2% 90%, transparent);
 	transition: scale .3s, opacity .2s, translate .6s;
 	pointer-events: none;
 }
@@ -32,11 +24,11 @@ explorer.in { scale: .9; }
 explorer.current {
 	opacity: 1;
 	scale: 1;
-	/* translate: 0 -100px; */
-	pointer-events: all;
+	pointer-events: all; /* only the active is clickable (others can be in front but transparent) */
 }
 /* [state-expanded="true"] explorer.current { translate: 0; } */
 
+/* ?? */
 explorer file {
 	display: flex;
 	flex-shrink: 0;
@@ -58,12 +50,15 @@ explorer button {
 	flex-shrink: 0;
 	gap: 6px;
 	max-width: calc(100% - 20px);
+	min-height: 0;
+	max-height: 250px;
 	width: auto;
 	margin: 2px auto 2px 12px;
 	padding: 6px 14px 6px 8px;
 	border-radius: 8px;
 	font-size: 14px;
 	text-align: start;
+	overflow: hidden;
 	transition: all .2s, box-shadow .4s;
 }
 
@@ -71,6 +66,14 @@ explorer button.selected {
 	box-shadow: -2px -2px 8px 0px #5b656f inset, 2px 2px 8px 0px #24282d inset;
 	color: var(--fg-l);
 	transition: all .2s, box-shadow .4s;
+}
+
+explorer button.hidden {
+	max-height: 0;
+	margin: 0 auto 0 12px;
+	padding: 0 14px 0 8px;
+	/* translate: -100% 0; */
+	opacity: 0;
 }
 
 explorer button b { text-decoration: underline; }

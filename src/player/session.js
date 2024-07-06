@@ -14,29 +14,21 @@ var Session = (() => {
 		if (event.target == SELF) return;
 
 		when(event.type)
-			.is(EventBus.type.PLAY_TRACK, () => update())
-			.is(EventBus.type.RESTORE_STATE, async () => update())
+			.is(EventBus.type.METADATA_UPDATE, () => update(event.data))
 			.is(EventBus.type.PLAY, () => setState(state.PLAYING))
 			.is(EventBus.type.PAUSE, () => setState(state.PAUSED));
 	});
 
-	MetadataWorker.addEventListener('message', (event) => {
-		const metadata = JSON.parse(event.data);
-
-		navigator.mediaSession.metadata = new MediaMetadata({
+	async function update(metadata) {
+		metadata = {
 			title: metadata.title,
 			artist: metadata.artist || '',
 			album: metadata.album,
-			artwork: []
-		});
-	});
+			artwork: [{ src: metadata.artwork }]
+		}
+		if (!metadata.artwork.src) delete metadata.artwork;
 
-	async function update() {
-		const path = State.get(State.key.TRACK);
-		if (path == 'null') return; // on first launch, path isn't there
-
-		const src = Native.FS.pathToSrc(path);
-		MetadataWorker.postMessage(src);
+		navigator.mediaSession.metadata = new MediaMetadata(metadata);
 	}
 
 	function setState(state) {

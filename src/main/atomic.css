@@ -26,7 +26,6 @@
 
 /* ATOMICS */
 .transparent { background: transparent; }
-.hidden { display: none; }
 .row { display: flex; align-items: center; }
 .row.centered { justify-content: center; }
 
@@ -59,12 +58,11 @@
 
 .ff-m { font-family: 'JetBrains Mono', monospace; }
 
-.rz-180 {
-	transform: rotateZ(180deg);
-}
+.rz-180 { transform: rotateZ(180deg); }
+.ry-90 { transform: translateX(10px) scale(.9) rotateY(90deg); }
 
-.ry-90 {
-	transform: translateX(10px) scale(.9) rotateY(90deg);
-}
+.blur { filter: blur(3px); }
 
 .inert { pointer-events: none; }
+.trans { transition: .2s ease; }
+.trans-sl { transition: .35s ease; }

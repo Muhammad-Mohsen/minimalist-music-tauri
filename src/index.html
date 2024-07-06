@@ -17,6 +17,8 @@
 <body onload="MainWindow.loaded()">
 <main data-tauri-drag-region>
 
+	<img id="artwork" alt="Artwork">
+
 	<!-- WINDOW CONTROLS -->
 	<window-controls class="window-controls">
 		<button class="material-symbols-outlined" onclick="MainWindow.minimize()">remove</button>
@@ -26,7 +28,7 @@
 	<!-- TRACK INFO -->
 	<track-info class="layer-controls" data-tauri-drag-region>
 		<label id="title" class="fw-l">Minimalist Music</label>
-		<label id="album-artist" class="c-prime ff-m">Hello...</label>
+		<label id="album-artist" class="c-prime ff-m trans-sl">Hello...</label>
 	</track-info>
 
 	<!-- default max set to 9999 so that we don't get division by 0 errors when the file starts playing but the metadata didn't yet load -->
@@ -50,7 +52,7 @@
 		<div class="row seek-container inert">
 			<div class="row fs-s fw-r c-fg-l ff-m">
 				<label id="current-position">--:--</label>
-				<label id="duration" class="c-fg">--:--</label>
+				<label id="duration" class="c-fg trans-sl">--:--</label>
 			</div>
 		</div>
 
@@ -76,9 +78,9 @@
 
 	<!-- EXPLORER - two to do transition animations...actually three are needed -->
 	<explorer-container>
-		<explorer class="current" data-dir=""></explorer>
-		<explorer class="out" data-dir=""></explorer>
-		<explorer class="in" data-dir=""></explorer>
+		<explorer data-tauri-drag-region class="current" data-dir=""></explorer>
+		<explorer data-tauri-drag-region class="out" data-dir=""></explorer>
+		<explorer data-tauri-drag-region class="in" data-dir=""></explorer>
 	</explorer-container>
 
 	<!-- ROOT FOLDER CONFIGURATION -->

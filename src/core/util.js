@@ -1,6 +1,3 @@
-Element.prototype.on = (type, handler) => this.addEventListener(type, handler);
-Element.prototype.isVisible = () => this.offsetWidth > 1 && this.offsetHeight > 1;
-
 NodeList.prototype.toArray = function () {
 	return [...this];
 }
@@ -44,12 +41,6 @@ String.prototype.replaceAt = function(index, replacement) {
 	return this.substring(0, index) + replacement + this.substring(index + 1);
 }
 
-document.createElementFromHTML = (htmlString) => {
-	const container = document.createElement('div');
-	container.innerHTML = htmlString.trim();
-	return container.childNodes[0];
-}
-
 // JSON
 JSON.tryParse = function (jsonStr, defaultValue) {
 	try {
@@ -67,7 +58,7 @@ JSON.isValid = function (jsonStr) {
 	catch { return false; }
 }
 
-Math.rand = function (min, max) {
+Math.randomInt = function (min, max) {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
