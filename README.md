@@ -3,12 +3,13 @@ Tauri version of the minimalist music player
 
 ## Features
 Nothing fancy, as the name implies
-- Music player with support for MP3, FLAC, WAV, AAC, OGG
-- Explorer view with search
+- Support for MP3, FLAC, WAV, AAC, OGG, M4B, ...
+- Neumorphic UI design
+- Integrated explorer with search
 - Media session integration
 - Keyboard shortcuts
 	- <kbd>**Space**</kbd>: Play/Pause
-	- <kbd>**0**</kbd>: Seek to begining
+	- <kbd>**0**</kbd>: Seek to start
 	- <kbd>**←**</kbd> / <kbd>**→**</kbd>: Seek jump by 10 seconds
 	- <kbd>**CTRL**</kbd> + <kbd>**←**</kbd> / <kbd>**CTRL**</kbd> + <kbd>**→**</kbd>: Play next/prev
 	- <kbd>**CTRL**</kbd> + <kbd>**F**</kbd>: Search
