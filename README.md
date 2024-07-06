@@ -11,7 +11,7 @@ Nothing fancy, as the name implies
 	- <kbd>**0**</kbd>: Seek to begining
 	- <kbd>**←**</kbd> / <kbd>**→**</kbd>: Seek jump by 10 seconds
 	- <kbd>**CTRL**</kbd> + <kbd>**←**</kbd> / <kbd>**CTRL**</kbd> + <kbd>**→**</kbd>: Play next/prev
-	- <kbd>**CTRL**</kbd> + <kbd>**F**</kbd> / <kbd>**CTRL**</kbd> + <kbd>**→**</kbd>: Play next/prev
+	- <kbd>**CTRL**</kbd> + <kbd>**F**</kbd>: Search
 
 ## Screenshots
 ![Screenshots](screenshots/screenshots.png)
