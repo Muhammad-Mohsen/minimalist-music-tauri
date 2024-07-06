@@ -29,46 +29,21 @@ Run `npx tauri icon` (with an `app-icon.png` at the root) to generate app icons
 I couldn't use webworkers for doing the visualization because they don't have access to the AudioContext API
 And since I'm already storing the metadata, it just didn't matter to just move the music-metadata call to a webworker
 
-## TODO
-```diff
-+ phase 1
-+ 	- select root folder (empty state)
-+ 	- bloop the expand button + add buttons to the bottom (root folder + search + collapse)...with bloop animation as well
-+ 	- explorer item style
-+ 	- explorer item actions
-+ player
-+ 	- navigator.mediaSession
-+ 	- playlist
-+ 		- index issue!!
-+ 	- handle seek
-+ 	- handle volume
-+ update seek time + album | artist font
-+ update album | artist placeholder to "Hello..."?
-+ Restoring state
-+ 	- volume level
-+ 	- seek position
-+ 	- track
-+	- dir
-+ search
-- chapters -- doesn't work :'(
-+ keyboard shortcuts
-+ pointer-events with title/album+artist
-+ use file name instead of title
-+ bug: selected item lost after changing directories
-- clunky code cleaning
-+	- metadata loading
-- 	- seek restoration
-+ shuffle/repeat
-+ bug: playlist not set on restore
-+ bug: handle control clicks when tracks aren't set
-+ neumorphic design
-+ explorer styling during hover
-+ window shadow
-+ ensure single instance https://github.com/tauri-apps/plugins-workspace/tree/v1/plugins/single-instance
+#### Metadata Library Comparison
+jsmediatags is at least twice as slow as music metadata browser
 
-- at some point, use Rust to get the track metadata and sample the audio to fix the perf issues
-- 	- https://ffmpeg.org/ffprobe.html
-- 	- https://stackoverflow.com/questions/30305953/is-there-an-elegant-way-to-split-a-file-by-chapter-using-ffmpeg
--	- D:\Music + Audiobooks\MISC\BOOKS\Alien Isolation>ffprobe -print_format json -show_chapters "Alien [Isolation].m4b"
-- 	- rust-id3 -> https://github.com/polyfloyd/rust-id3
+to test
+// #1
+```
+musicMetadata
+	.fetchFromUrl("https://asset.localhost/D%3A%5CMusic%20%2B%20Audiobooks%5CMISC%5CBOOKS%5CAd%20Astra%5C01%20-%20Intro%20%2B%20Lady%20Be%20Good.mp3")
+	.then(res => console.log(res))
+```
+// #2
+```
+jsmediatags.Config.setDisallowedXhrHeaders(['If-Modified-Since', 'Range'])
+jsmediatags.read("https://asset.localhost/D%3A%5CMusic%20%2B%20Audiobooks%5CMISC%5CBOOKS%5CAd%20Astra%5C01%20-%20Intro%20%2B%20Lady%20Be%20Good.mp3", {
+	onSuccess: function(tag) { console.log(tag); },
+	onError: function(error) { console.log(error); }
+});
 ```
