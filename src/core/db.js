@@ -1,32 +1,8 @@
-/**
- * A constructor for an IndexedDB database.
- *
- * @param {string} name The name of the database.
- * @param {number} version The version of the database.
- */
-var DB2 = function (name, version) {
+function DB(name, version) {
 
-	/**
-	 * The index of the current store.
-	 *
-	 * @private
-	 */
 	let storeIndex = 0;
-
-	/**
-	 * An array of store objects.
-	 *
-	 * @private
-	 */
 	const stores = [];
 
-	/**
-	 * Creates a new object store.
-	 *
-	 * @param {string} name The name of the object store.
-	 * @param {IDBObjectStoreParameters} options The options for the object store.
-	 * @returns {DB2} This instance of DB2.
-	 */
 	function objectStore(name, options) {
 		stores.push({ name, options });
 		storeIndex++;
@@ -34,14 +10,6 @@ var DB2 = function (name, version) {
 		return this;
 	}
 
-	/**
-	 * Creates a new index in the current object store.
-	 *
-	 * @param {string} indexName The name of the index.
-	 * @param {string} propName The name of the property to index.
-	 * @param {IDBIndexParameters} options The options for the index.
-	 * @returns {DB2} This instance of DB2.
-	 */
 	function withIndex(indexName, propName, options) {
 		stores[storeIndex].indices
 			? stores[storeIndex].indices.push({ indexName, propName, options })
@@ -50,11 +18,6 @@ var DB2 = function (name, version) {
 		return this;
 	}
 
-	/**
-	 * Creates/Opens the database.
-	 *
-	 * @returns {Promise<IDBDatabase>} A promise that resolves to the database object.
-	 */
 	function open() {
 		return new Promise((resolve, reject) => {
 			const dbRequest = indexedDB.open(name, version);
@@ -110,9 +73,7 @@ var DB2 = function (name, version) {
 			});
 		}
 
-		db.update = (store, obj) => {
-			// clunky select then put
-		}
+		db.update = (store, obj) => {}
 
 		db.delete = (store, keys) => {
 			return new Promise((resolve, reject) => {
