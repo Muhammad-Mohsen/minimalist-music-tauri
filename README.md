@@ -7,10 +7,14 @@ Nothing fancy, as the name implies
 - Explorer view with search
 - Media session integration
 - Keyboard shortcuts
-	- <kbd>**`Space`**</kbd>: Play/Pause
-	- <kbd>**`0`**</kbd>: Seek to begining
-	- <kbd>**`←`**</kbd> / <kbd>**`→`**</kbd>: Seek jump by 10 seconds
-	- <kbd>**`CTRL`**</kbd> + <kbd>**`←`**</kbd> / <kbd>**`CTRL`**</kbd> + <kbd>**`→`**</kbd>: Play next/prev
+	- <kbd>**Space**</kbd>: Play/Pause
+	- <kbd>**0**</kbd>: Seek to begining
+	- <kbd>**←**</kbd> / <kbd>**→**</kbd>: Seek jump by 10 seconds
+	- <kbd>**CTRL**</kbd> + <kbd>**←**</kbd> / <kbd>**CTRL**</kbd> + <kbd>**→**</kbd>: Play next/prev
+	- <kbd>**CTRL**</kbd> + <kbd>**F**</kbd> / <kbd>**CTRL**</kbd> + <kbd>**→**</kbd>: Play next/prev
+
+## Screenshots
+![Screenshots](screenshots/screenshots.png)
 
 ## Develop
 ### Run Locally
@@ -32,15 +36,14 @@ And since I'm already storing the metadata, it just didn't matter to just move t
 #### Metadata Library Comparison
 jsmediatags is at least twice as slow as music metadata browser
 
-to test
-// #1
 ```
+// #1
 musicMetadata
 	.fetchFromUrl("https://asset.localhost/D%3A%5CMusic%20%2B%20Audiobooks%5CMISC%5CBOOKS%5CAd%20Astra%5C01%20-%20Intro%20%2B%20Lady%20Be%20Good.mp3")
 	.then(res => console.log(res))
 ```
-// #2
 ```
+// #2
 jsmediatags.Config.setDisallowedXhrHeaders(['If-Modified-Since', 'Range'])
 jsmediatags.read("https://asset.localhost/D%3A%5CMusic%20%2B%20Audiobooks%5CMISC%5CBOOKS%5CAd%20Astra%5C01%20-%20Intro%20%2B%20Lady%20Be%20Good.mp3", {
 	onSuccess: function(tag) { console.log(tag); },
