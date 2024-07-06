@@ -20,15 +20,12 @@ var Session = (() => {
 	});
 
 	async function update(metadata) {
-		metadata = {
+		navigator.mediaSession.metadata = new MediaMetadata({
 			title: metadata.title,
 			artist: metadata.artist || '',
 			album: metadata.album,
-			artwork: [{ src: metadata.artwork }]
-		}
-		if (!metadata.artwork.src) delete metadata.artwork;
-
-		navigator.mediaSession.metadata = new MediaMetadata(metadata);
+			artwork: [{ src: metadata.artwork || '../assets/images/icon.png' }]
+		});
 	}
 
 	function setState(state) {
