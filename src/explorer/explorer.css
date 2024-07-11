@@ -7,8 +7,10 @@ explorer-container {
 }
 
 explorer {
-	grid-row-start: 1;
-	grid-column-start: 1;
+	grid-row: 1;
+	grid-column: 1;
+	position: sticky;
+	top: 0; /* :( fixes a weird bug where the explorer shifts upward a bit when scrollIntoView-ing an element that's near the bottom */
 	display: inline-flex;
 	overflow: auto;
 	padding-bottom: 64px;
