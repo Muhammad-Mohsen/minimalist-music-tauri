@@ -32,7 +32,7 @@
 	</track-info>
 
 	<!-- default max set to 9999 so that we don't get division by 0 errors when the file starts playing but the metadata didn't yet load -->
-	<input type="range" id="seek" class="layer-controls" max="9999" onmousedown="Player.onSeekMouseDown()" oninput="Player.onSeekChange()" onmouseup="Player.onSeekMouseUp()">
+	<input type="range" id="seek" class="layer-controls" step=".01" max="9999" onmousedown="Player.onSeekMouseDown()" oninput="Player.onSeekChange()" onmouseup="Player.onSeekMouseUp()">
 
 	<!-- CONTROLS -->
 	<controls class="row centered controls-container">

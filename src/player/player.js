@@ -7,8 +7,6 @@ var Player = (() => {
 	const VOLUME_JUMP = .1;
 	const SEEKING_ATTR = 'seeking';
 
-	let tickerTimeout;
-
 	const ui = {
 		title: document.querySelector('#title'),
 		albumArtist: document.querySelector('#album-artist'),
@@ -90,6 +88,9 @@ var Player = (() => {
 		playPause(audio.autoplay);
 		MetadataWorker.postMessage(audio.src); // do the metadata data load so as not to trip over each other
 	}
+	audio.ontimeupdate = function () {
+		if (!ui.seek.hasAttribute(SEEKING_ATTR)) seek(audio.currentTime);
+	}
 
 	async function load(path, auto) {
 		const src = Native.FS.pathToSrc(path);
@@ -112,7 +113,6 @@ var Player = (() => {
 			: (audio.paused ? audio.play() : audio.pause());
 
 		ui.playPause.classList.toggle('pause', !audio.paused);
-		ticker();
 
 		if (!suppress) EventBus.dispatch({ type: force ? EventBus.type.PLAY : EventBus.type.PAUSE, target: SELF });
 	}
@@ -200,17 +200,6 @@ var Player = (() => {
 	function onSeekMouseUp() {
 		ui.seek.removeAttribute(SEEKING_ATTR);
 		audio.muted = false;
-	}
-
-	function ticker() {
-		clearTimeout(tickerTimeout);
-		tickerTimeout = setTimeout(() => {
-			if (audio.paused) return;
-
-			if (!ui.seek.hasAttribute(SEEKING_ATTR)) seek(audio.currentTime);
-			ticker(audio);
-
-		}, 1000);
 	}
 
 	// UI TEXT STUFF
