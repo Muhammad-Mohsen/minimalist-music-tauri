@@ -95,5 +95,4 @@ function DB(name, version) {
 		withIndex,
 		open
 	}
-
 };

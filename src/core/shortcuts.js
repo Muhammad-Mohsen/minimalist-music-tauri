@@ -5,7 +5,7 @@
 	// possible fix for focus hijacking which break the shortcuts
 	Native.Window.onFocus(() => {
 		document.dispatchEvent(new Event('focus'));
-	})
+	});
 
 	// prevent space from scrolling the explorer
 	window.onkeydown = (event) => {
@@ -14,7 +14,7 @@
 	}
 
 	window.onkeyup = (event) => {
-		if (event.target.tagName.toUpperCase() == 'INPUT') return; // ignore key presses in the search box
+		if (event.target.type == 'text') return; // ignore key presses in the search box
 
 		event.preventDefault();
 		event.stopPropagation();
@@ -34,7 +34,8 @@
 			.is('NumpadSubtract', () => EventBus.dispatch({ type: EventBus.type.VOLUME_DOWN, target: SELF }))
 			.is('KeyF', () => {
 				if (event.ctrlKey) EventBus.dispatch({ type: EventBus.type.SEARCH, target: SELF });
-			});
+			})
+			.is('F5', () => EventBus.dispatch({ type: EventBus.type.METADATA_CLEAR, target: SELF }));
 	}
 
 })();

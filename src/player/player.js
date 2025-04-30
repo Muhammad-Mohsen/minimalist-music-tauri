@@ -64,13 +64,15 @@ var Player = (() => {
 
 			.is(EventBus.type.VOLUME_DOWN, () => onVolumeChange(audio.volume - VOLUME_JUMP))
 			.is(EventBus.type.VOLUME_UP, () => onVolumeChange(audio.volume + VOLUME_JUMP))
+
+			.is(EventBus.type.METADATA_CLEAR, () => MetadataWorker.postMessage({ type: EventBus.type.METADATA_CLEAR, src: audio.src }))
 	});
 
 	MetadataWorker.addEventListener('message', (event) => {
 		const metadata = JSON.parse(event.data);
 		albumArtist(metadata.album, metadata.artist);
 		artwork(metadata.artwork);
-		seek(audio.currentTime || 0, metadata.duration);
+		seek(audio.currentTime || 0, metadata.duration || audio.duration); // the metadata library reported NaN for absolution.m4b!
 
 		EventBus.dispatch({
 			target: EventBus.target.PLAYER,
@@ -86,7 +88,7 @@ var Player = (() => {
 	}
 	audio.onloadeddata = function () {
 		playPause(audio.autoplay);
-		MetadataWorker.postMessage(audio.src); // do the metadata data load so as not to trip over each other
+		MetadataWorker.postMessage({ type: EventBus.type.METADATA_FETCH, src: audio.src }); // fetch metadata after audio is loaded so as not to trip over each other
 	}
 	audio.ontimeupdate = function () {
 		if (!ui.seek.hasAttribute(SEEKING_ATTR)) seek(audio.currentTime);

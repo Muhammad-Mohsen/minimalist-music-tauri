@@ -15,6 +15,8 @@ var EventBus = (() => {
 		VOLUME_DOWN: 'volumedown',
 		VOLUME_UP: 'volumeup',
 		METADATA_UPDATE: 'metadataupdate',
+		METADATA_FETCH: 'metadatafetch',
+		METADATA_CLEAR: 'metadataclear',
 
 		TOGGLE_SHUFFLE: 'toggleshuffle',
 		TOGGLE_REPEAT: 'togglerepeat',

@@ -1,4 +1,4 @@
-importScripts('music-metadata-browser.js', '../core/db.js', 'metadata-store.js');
+importScripts('music-metadata-browser.js', '../core/db.js', '../core/event-bus.js', 'metadata-store.js');
 
 const musicMetadata = require_lib4();
 
@@ -24,14 +24,24 @@ var Metadata = (() => {
 		return metadata;
 	}
 
+	function remove(url) {
+		MetadataStore.del(url);
+	}
+
 	return {
-		fromSrc
+		fromSrc,
+		remove,
 	}
 
 })();
 
 // handle the message
 onmessage = async (event) => {
-	const metadata = await Metadata.fromSrc(event.data);
-	postMessage(JSON.stringify(metadata));
+	if (event.data.type == EventBus.type.METADATA_FETCH) {
+		const metadata = await Metadata.fromSrc(event.data.src);
+		postMessage(JSON.stringify(metadata));
+
+	} else if (event.data.type == EventBus.type.METADATA_CLEAR) {
+		Metadata.remove(event.data.src)
+	}
 }
