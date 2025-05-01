@@ -124,6 +124,7 @@ var Player = (() => {
 		const path = Playlist.getNext(onComplete);
 		if (!path) return;
 
+		loadingIndicator(true);
 		State.set(State.key.TRACK, path);
 		EventBus.dispatch({ type: EventBus.type.PLAY_TRACK, target: SELF });
 		load(path, true);
@@ -134,6 +135,7 @@ var Player = (() => {
 		const path = Playlist.getPrev(true);
 		if (!path) return;
 
+		loadingIndicator(true);
 		State.set(State.key.TRACK, path);
 		load(path, true);
 		EventBus.dispatch({ type: EventBus.type.PLAY_TRACK, target: SELF });

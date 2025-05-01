@@ -1,6 +1,6 @@
 [package]
 name = "minimalist-music"
-version = "1.4.2"
+version = "1.4.3"
 description = "A folder-based, minimalistic, neumorphic music player"
 authors = ["muhammad mohsen"]
 license = "MIT"
