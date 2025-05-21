@@ -10,7 +10,7 @@ var Native = (() => {
 	const PATH_SEPARATOR = '\\';
 	const AUDIO_EXT = /\.(mp3|ogg|aac|flac|wav|m4a|m4b)$/
 
-	async function openRootDirDialog() {
+	async function openRootDirDialog() { // need to add permissions
 		const root = await dialog.open({
 			directory: true,
 			multiple: false,
